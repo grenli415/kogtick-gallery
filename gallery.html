@@ -6,6 +6,16 @@
     <title>Галерея работ - Когтик</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
+        :root {
+            --primary-blue: #87CEEB;
+            --primary-pink: #FFB6C1;
+            --primary-white: #FFFFFF;
+            --gradient: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-pink) 100%);
+            --text-dark: #333;
+            --text-light: #666;
+            --shadow: 0 10px 30px rgba(135, 206, 235, 0.3);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -14,8 +24,8 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #87CEEB 0%, #FFB6C1 100%);
-            color: #333;
+            background: var(--gradient);
+            color: var(--text-dark);
             padding: 10px;
             min-height: 100vh;
         }
@@ -24,16 +34,17 @@
             text-align: center;
             color: white;
             margin-bottom: 20px;
-            background: rgba(0,0,0,0.1);
+            background: rgba(255,255,255,0.1);
             padding: 20px;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.2);
         }
 
         .header h1 {
-            font-size: 24px;
+            font-size: 26px;
             margin-bottom: 8px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
 
         .header p {
@@ -41,64 +52,117 @@
             opacity: 0.9;
         }
 
+        .admin-header {
+            display: none;
+            background: rgba(255,182,193,0.9);
+            color: var(--text-dark);
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--primary-pink);
+        }
+
+        .admin-controls {
+            display: none;
+            background: rgba(255,255,255,0.95);
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            border: 2px solid var(--primary-blue);
+        }
+
+        .add-work-btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0 auto 15px auto;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(135, 206, 235, 0.4);
+        }
+
+        .add-work-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(135, 206, 235, 0.5);
+        }
+
         .filters {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 8px;
+            margin-bottom: 25px;
             flex-wrap: wrap;
+            padding: 0 10px;
         }
 
         .filter-btn {
             background: rgba(255,255,255,0.2);
             border: 2px solid rgba(255,255,255,0.3);
             color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
+            padding: 10px 16px;
+            border-radius: 25px;
             cursor: pointer;
             font-size: 13px;
+            font-weight: 500;
             transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .filter-btn.active {
-            background: white;
-            color: #87CEEB;
-            border-color: white;
+            background: var(--primary-white);
+            color: var(--primary-blue);
+            border-color: var(--primary-white);
             transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(255,255,255,0.3);
         }
 
-        .filter-btn:hover {
+        .filter-btn:hover:not(.active) {
             background: rgba(255,255,255,0.3);
             transform: translateY(-2px);
+            border-color: rgba(255,255,255,0.5);
         }
 
         .gallery {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 15px;
-            max-width: 1200px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
         .work-card {
-            background: white;
-            border-radius: 15px;
+            background: var(--primary-white);
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            box-shadow: var(--shadow);
             transition: all 0.3s ease;
             cursor: pointer;
             position: relative;
+            border: 2px solid transparent;
         }
 
         .work-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(135, 206, 235, 0.4);
+            border-color: var(--primary-blue);
         }
 
         .work-image {
             width: 100%;
-            height: 200px;
+            height: 220px;
             object-fit: cover;
             transition: transform 0.3s ease;
         }
@@ -108,21 +172,21 @@
         }
 
         .work-info {
-            padding: 16px;
+            padding: 18px;
         }
 
         .work-title {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: bold;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             line-height: 1.3;
-            color: #333;
+            color: var(--text-dark);
         }
 
         .work-description {
-            color: #666;
-            font-size: 13px;
-            margin-bottom: 12px;
+            color: var(--text-light);
+            font-size: 14px;
+            margin-bottom: 15px;
             line-height: 1.4;
         }
 
@@ -130,46 +194,85 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 11px;
-            color: #999;
-            margin-bottom: 10px;
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 5px;
         }
 
         .work-tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 4px;
-            margin-bottom: 10px;
+            gap: 6px;
+            margin-bottom: 12px;
         }
 
         .tag {
-            background: linear-gradient(45deg, #87CEEB, #FFB6C1);
+            background: var(--gradient);
             color: white;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 10px;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 11px;
             font-weight: 500;
+            box-shadow: 0 2px 8px rgba(135, 206, 235, 0.3);
         }
 
         .work-stats {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 12px;
-            color: #999;
+            font-size: 13px;
             border-top: 1px solid #f0f0f0;
-            padding-top: 10px;
+            padding-top: 12px;
         }
 
         .price {
             font-weight: bold;
-            color: #4CAF50;
+            color: var(--primary-blue);
+            font-size: 14px;
         }
 
         .views {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
+            color: var(--text-light);
+        }
+
+        .admin-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--primary-pink);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: #ff4757;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .delete-btn:hover {
+            background: #ff3742;
+            transform: scale(1.1);
         }
 
         .loading {
@@ -182,13 +285,13 @@
         }
 
         .spinner {
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             border: 4px solid rgba(255,255,255,0.3);
             border-top: 4px solid white;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
 
         @keyframes spin {
@@ -199,14 +302,15 @@
         .empty {
             text-align: center;
             color: white;
-            padding: 40px;
+            padding: 50px 20px;
         }
 
         .empty-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
+            font-size: 60px;
+            margin-bottom: 20px;
         }
 
+        /* Модальные окна */
         .modal {
             display: none;
             position: fixed;
@@ -216,66 +320,121 @@
             width: 100%;
             height: 100%;
             background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(8px);
         }
 
         .modal-content {
             position: relative;
             background: white;
-            margin: 5% auto;
-            padding: 20px;
+            margin: 3% auto;
+            padding: 25px;
             width: 90%;
-            max-width: 500px;
-            border-radius: 15px;
-            max-height: 80vh;
+            max-width: 600px;
+            border-radius: 20px;
+            max-height: 90vh;
             overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
 
         .modal-close {
             position: absolute;
-            right: 15px;
-            top: 15px;
-            font-size: 24px;
+            right: 20px;
+            top: 20px;
+            font-size: 28px;
             cursor: pointer;
-            color: #999;
-            width: 30px;
-            height: 30px;
+            color: var(--text-light);
+            width: 35px;
+            height: 35px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
             background: #f5f5f5;
+            transition: all 0.2s ease;
         }
 
         .modal-close:hover {
-            background: #ddd;
-            color: #333;
+            background: var(--primary-pink);
+            color: white;
+            transform: scale(1.1);
         }
 
         .modal-image {
             width: 100%;
-            height: 250px;
+            height: 300px;
             object-fit: cover;
-            border-radius: 10px;
-            margin-bottom: 16px;
+            border-radius: 15px;
+            margin-bottom: 20px;
         }
 
-        .order-btn {
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: var(--text-dark);
+        }
+
+        .form-group input,
+        .form-group textarea {
             width: 100%;
-            background: linear-gradient(45deg, #87CEEB, #FFB6C1);
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn {
+            background: var(--gradient);
             color: white;
             border: none;
-            padding: 12px;
-            border-radius: 10px;
+            padding: 12px 24px;
+            border-radius: 25px;
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 16px;
-            transition: transform 0.2s ease;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            box-shadow: 0 5px 15px rgba(135, 206, 235, 0.4);
         }
 
-        .order-btn:hover {
-            transform: scale(1.02);
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(135, 206, 235, 0.5);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            box-shadow: 0 8px 25px rgba(108, 117, 125, 0.5);
+        }
+
+        .hashtags-input {
+            background: #f8f9fa;
+            border: 1px dashed var(--primary-blue);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: var(--text-light);
         }
 
         @media (max-width: 768px) {
@@ -284,8 +443,8 @@
             }
 
             .gallery {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-                gap: 12px;
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 15px;
             }
 
             .header {
@@ -293,15 +452,11 @@
             }
 
             .header h1 {
-                font-size: 20px;
-            }
-
-            .work-card {
-                border-radius: 12px;
+                font-size: 22px;
             }
 
             .work-image {
-                height: 180px;
+                height: 200px;
             }
 
             .filters {
@@ -309,8 +464,14 @@
             }
 
             .filter-btn {
-                padding: 6px 12px;
+                padding: 8px 12px;
                 font-size: 12px;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 5% auto;
+                padding: 20px;
             }
         }
 
@@ -319,24 +480,34 @@
                 grid-template-columns: 1fr;
             }
 
-            .modal-content {
-                width: 95%;
-                margin: 10% auto;
+            .filters {
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding: 0 10px;
             }
         }
     </style>
 </head>
 <body>
+    <div class="admin-header" id="adminHeader">
+        <h2>🔧 Режим администратора</h2>
+        <p>Вы можете добавлять и удалять работы</p>
+    </div>
+
     <div class="header">
         <h1>🖼️ Галерея работ</h1>
         <p>Мастерская «Когтик» • Мебель для питомцев с 2019 года</p>
     </div>
 
-    <div class="filters">
+    <div class="admin-controls" id="adminControls">
+        <button class="add-work-btn" onclick="openAddWorkModal()">
+            <span>➕</span> Добавить работу
+        </button>
+    </div>
+
+    <div class="filters" id="filters">
         <div class="filter-btn active" data-filter="all">🔍 Все работы</div>
-        <div class="filter-btn" data-filter="cats">🐱 Для кошек</div>
-        <div class="filter-btn" data-filter="dogs">🐕 Для собак</div>
-        <div class="filter-btn" data-filter="premium">⭐ Премиум</div>
+        <!-- Фильтры будут добавлены динамически -->
     </div>
 
     <div id="loading" class="loading">
@@ -352,40 +523,99 @@
         <p>Попробуйте выбрать другой фильтр</p>
     </div>
 
-    <!-- Модальное окно -->
-    <div id="modal" class="modal">
+    <!-- Модальное окно просмотра работы -->
+    <div id="viewModal" class="modal">
         <div class="modal-content">
-            <div class="modal-close">&times;</div>
-            <img id="modal-image" class="modal-image" alt="">
-            <h3 id="modal-title"></h3>
-            <p id="modal-description"></p>
-            <div id="modal-tags" class="work-tags"></div>
-            <div id="modal-specs"></div>
-            <button class="order-btn" onclick="orderWork()">
+            <div class="modal-close" onclick="closeModal('viewModal')">&times;</div>
+            <img id="modalImage" class="modal-image" alt="">
+            <h3 id="modalTitle"></h3>
+            <p id="modalDescription"></p>
+            <div id="modalTags" class="work-tags"></div>
+            <div id="modalSpecs"></div>
+            <button class="btn" onclick="orderWork()" style="width: 100%; margin-top: 20px;">
                 📞 Заказать эту работу
             </button>
+        </div>
+    </div>
+
+    <!-- Модальное окно добавления работы -->
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-close" onclick="closeModal('addModal')">&times;</div>
+            <h3 style="margin-bottom: 20px;">➕ Добавить новую работу</h3>
+
+            <form id="addWorkForm">
+                <div class="form-group">
+                    <label>🖼️ URL изображения:</label>
+                    <input type="url" id="imageUrl" required placeholder="https://example.com/image.jpg">
+                </div>
+
+                <div class="form-group">
+                    <label>📝 Название комплекса:</label>
+                    <input type="text" id="workTitle" required placeholder="Комплекс 'Название'">
+                </div>
+
+                <div class="form-group">
+                    <label>📄 Описание:</label>
+                    <textarea id="workDescription" required placeholder="Подробное описание работы..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>🏷️ Хэштеги (через запятую):</label>
+                    <input type="text" id="workHashtags" placeholder="#комплекс, #премиум, #кошки" class="hashtags-input">
+                    <small style="color: var(--text-light);">Хэштеги будут использоваться для фильтров</small>
+                </div>
+
+                <div class="form-group">
+                    <label>📏 Размеры:</label>
+                    <input type="text" id="workDimensions" placeholder="180×80×60 см">
+                </div>
+
+                <div class="form-group">
+                    <label>🔨 Материалы:</label>
+                    <input type="text" id="workMaterials" placeholder="Березовая фанера, джут">
+                </div>
+
+                <div class="form-group">
+                    <label>💰 Цена:</label>
+                    <input type="text" id="workPrice" placeholder="15 000 - 25 000 ₽">
+                </div>
+
+                <div style="text-align: center; margin-top: 25px;">
+                    <button type="submit" class="btn">💾 Сохранить работу</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addModal')">❌ Отмена</button>
+                </div>
+            </form>
         </div>
     </div>
 
     <script>
         // Инициализация Telegram WebApp
         const tg = window.Telegram?.WebApp;
+        let isAdmin = false;
+
         if (tg) {
             tg.ready();
             tg.expand();
             tg.enableClosingConfirmation();
+
+            // Проверяем права админа через initData
+            const initData = tg.initData;
+            if (initData) {
+                // Здесь можно добавить проверку админских прав
+                // isAdmin = checkAdminRights(initData);
+                isAdmin = true; // Для демо - включаем админ режим
+            }
         }
 
-        // Данные работ
-        const works = [
+        // Данные работ (загружаются из localStorage или API)
+        let works = JSON.parse(localStorage.getItem('galleryWorks')) || [
             {
                 id: 1,
                 title: "Многоуровневый комплекс 'Царский дворец'",
                 description: "Роскошный 5-уровневый комплекс для крупных кошек с когтеточками, домиками и лежанками из premium материалов",
                 image: "https://images.unsplash.com/photo-1545008344-4c1b3c5a5a53?w=400&h=300&fit=crop",
                 hashtags: ["#комплекс", "#премиум", "#крупныекошки", "#5уровней"],
-                category: "cats",
-                type: "premium",
                 dimensions: "180×80×60 см",
                 materials: "Березовая фанера, джут, плюш",
                 price: "15 000 - 25 000 ₽",
@@ -396,9 +626,7 @@
                 title: "Настенный комплекс 'Джунгли'",
                 description: "Модульная система полок и переходов для активных кошек. Крепится к стене, экономит место в квартире",
                 image: "https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?w=400&h=300&fit=crop",
-                hashtags: ["#настенный", "#модульный", "#активные", "#экономия"],
-                category: "cats",
-                type: "wall",
+                hashtags: ["#настенный", "#модульный", "#активные", "#кошки"],
                 dimensions: "200×40×160 см",
                 materials: "Массив сосны, сизаль",
                 price: "8 000 - 12 000 ₽",
@@ -410,8 +638,6 @@
                 description: "Деревянная лесенка с антискользящим покрытием для пожилых и маленьких собак. Регулируемая высота",
                 image: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400&h=300&fit=crop",
                 hashtags: ["#лесенка", "#собаки", "#безопасность", "#пожилые"],
-                category: "dogs",
-                type: "stairs",
                 dimensions: "60×35×40 см",
                 materials: "Массив дуба, резина",
                 price: "3 000 - 5 000 ₽",
@@ -422,46 +648,94 @@
                 title: "Домик-берлога 'Уютный'",
                 description: "Закрытый домик-укрытие для пугливых кошек с мягкой подушкой и теплоизоляцией",
                 image: "https://images.unsplash.com/photo-1548247416-ec66f4900b2e?w=400&h=300&fit=crop",
-                hashtags: ["#домик", "#укрытие", "#уют", "#берлога"],
-                category: "cats",
-                type: "house",
+                hashtags: ["#домик", "#укрытие", "#уют", "#кошки"],
                 dimensions: "45×45×35 см",
                 materials: "Фанера, искусственный мех",
                 price: "2 500 - 4 000 ₽",
                 views: 123
-            },
-            {
-                id: 5,
-                title: "Игровой комплекс 'Космос'",
-                description: "Футуристический дизайн с LED-подсветкой и интерактивными элементами для современных интерьеров",
-                image: "https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=400&h=300&fit=crop",
-                hashtags: ["#космос", "#LED", "#интерактив", "#дизайн"],
-                category: "cats",
-                type: "premium",
-                dimensions: "150×70×180 см",
-                materials: "Пластик, металл, LED",
-                price: "20 000 - 30 000 ₽",
-                views: 234
-            },
-            {
-                id: 6,
-                title: "Пандус 'Гигант'",
-                description: "Складной пандус для загрузки крупных собак в автомобиль. Легкий и прочный алюминиевый каркас",
-                image: "https://images.unsplash.com/photo-1552053831-71594a27632d?w=400&h=300&fit=crop",
-                hashtags: ["#пандус", "#авто", "#крупныесобаки", "#складной"],
-                category: "dogs",
-                type: "ramp",
-                dimensions: "180×40×8 см",
-                materials: "Алюминий, резина",
-                price: "4 500 - 7 000 ₽",
-                views: 89
             }
         ];
 
         let currentFilter = 'all';
         let currentWorks = works;
+        let allHashtags = new Set();
 
-        // Функции
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeApp();
+
+            // Обработчик формы добавления работы
+            document.getElementById('addWorkForm').addEventListener('submit', handleAddWork);
+        });
+
+        function initializeApp() {
+            // Показываем админ-панель если админ
+            if (isAdmin) {
+                document.getElementById('adminHeader').style.display = 'block';
+                document.getElementById('adminControls').style.display = 'block';
+            }
+
+            // Собираем все хэштеги и создаем фильтры
+            updateHashtags();
+            createFilters();
+
+            // Симулируем загрузку
+            setTimeout(() => {
+                document.getElementById('loading').style.display = 'none';
+                renderGallery(works);
+            }, 800);
+        }
+
+        function updateHashtags() {
+            allHashtags.clear();
+            works.forEach(work => {
+                work.hashtags.forEach(tag => {
+                    allHashtags.add(tag.replace('#', ''));
+                });
+            });
+        }
+
+        function createFilters() {
+            const filtersContainer = document.getElementById('filters');
+            const allBtn = filtersContainer.querySelector('[data-filter="all"]');
+
+            // Удаляем старые фильтры, кроме "Все работы"
+            const oldFilters = filtersContainer.querySelectorAll('.filter-btn:not([data-filter="all"])');
+            oldFilters.forEach(btn => btn.remove());
+
+            // Добавляем фильтры по хэштегам
+            allHashtags.forEach(hashtag => {
+                const filterBtn = document.createElement('div');
+                filterBtn.className = 'filter-btn';
+                filterBtn.setAttribute('data-filter', hashtag);
+
+                // Эмодзи для популярных категорий
+                const emoji = getEmojiForHashtag(hashtag);
+                filterBtn.innerHTML = `${emoji} ${hashtag}`;
+
+                filterBtn.addEventListener('click', () => filterWorks(hashtag));
+                filtersContainer.appendChild(filterBtn);
+            });
+        }
+
+        function getEmojiForHashtag(hashtag) {
+            const emojiMap = {
+                'кошки': '🐱',
+                'собаки': '🐕',
+                'премиум': '⭐',
+                'комплекс': '🏰',
+                'домик': '🏠',
+                'лесенка': '🪜',
+                'настенный': '📐',
+                'модульный': '🧩',
+                'уют': '🤗',
+                'безопасность': '🛡️',
+                'активные': '⚡',
+                'пожилые': '👴'
+            };
+            return emojiMap[hashtag] || '🏷️';
+        }
+
         function renderGallery(worksToShow) {
             const gallery = document.getElementById('gallery');
             const empty = document.getElementById('empty');
@@ -485,23 +759,24 @@
         function createWorkCard(work) {
             const card = document.createElement('div');
             card.className = 'work-card';
-            card.onclick = () => openModal(work);
+            card.onclick = () => openViewModal(work);
 
             card.innerHTML = `
+                ${isAdmin ? `<button class="delete-btn" onclick="deleteWork(event, ${work.id})" style="display: flex;">×</button>` : ''}
                 <img src="${work.image}" alt="${work.title}" class="work-image" loading="lazy">
                 <div class="work-info">
                     <h3 class="work-title">${work.title}</h3>
                     <p class="work-description">${work.description}</p>
                     <div class="work-meta">
-                        <span>📏 ${work.dimensions}</span>
-                        <span>🔨 ${work.materials.split(',')[0]}</span>
+                        <span>📏 ${work.dimensions || 'Не указано'}</span>
+                        <span>🔨 ${work.materials?.split(',')[0] || 'Не указано'}</span>
                     </div>
                     <div class="work-tags">
                         ${work.hashtags.map(tag => `<span class="tag">${tag}</span>`).join('')}
                     </div>
                     <div class="work-stats">
-                        <div class="price">${work.price}</div>
-                        <div class="views">👀 ${work.views}</div>
+                        <div class="price">${work.price || 'По запросу'}</div>
+                        <div class="views">👀 ${work.views || 0}</div>
                     </div>
                 </div>
             `;
@@ -512,7 +787,7 @@
         function filterWorks(filter) {
             currentFilter = filter;
 
-            // Обновляем кнопки фильтров
+            // Обновляем активный фильтр
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
@@ -521,27 +796,27 @@
             // Фильтруем работы
             if (filter === 'all') {
                 currentWorks = works;
-            } else if (filter === 'premium') {
-                currentWorks = works.filter(work => work.type === 'premium');
             } else {
-                currentWorks = works.filter(work => work.category === filter);
+                currentWorks = works.filter(work =>
+                    work.hashtags.some(tag => tag.replace('#', '') === filter)
+                );
             }
 
             renderGallery(currentWorks);
 
-            // Haptic feedback для Telegram
+            // Haptic feedback
             if (tg?.HapticFeedback) {
                 tg.HapticFeedback.impactOccurred('light');
             }
         }
 
-        function openModal(work) {
-            const modal = document.getElementById('modal');
-            const modalImage = document.getElementById('modal-image');
-            const modalTitle = document.getElementById('modal-title');
-            const modalDescription = document.getElementById('modal-description');
-            const modalTags = document.getElementById('modal-tags');
-            const modalSpecs = document.getElementById('modal-specs');
+        function openViewModal(work) {
+            const modal = document.getElementById('viewModal');
+            const modalImage = document.getElementById('modalImage');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalDescription = document.getElementById('modalDescription');
+            const modalTags = document.getElementById('modalTags');
+            const modalSpecs = document.getElementById('modalSpecs');
 
             modalImage.src = work.image;
             modalImage.alt = work.title;
@@ -549,16 +824,17 @@
             modalDescription.textContent = work.description;
             modalTags.innerHTML = work.hashtags.map(tag => `<span class="tag">${tag}</span>`).join('');
             modalSpecs.innerHTML = `
-                <p><strong>📏 Размеры:</strong> ${work.dimensions}</p>
-                <p><strong>🔨 Материалы:</strong> ${work.materials}</p>
-                <p><strong>💰 Цена:</strong> ${work.price}</p>
-                <p><strong>👀 Просмотров:</strong> ${work.views}</p>
+                <p style="margin: 10px 0;"><strong>📏 Размеры:</strong> ${work.dimensions || 'Не указано'}</p>
+                <p style="margin: 10px 0;"><strong>🔨 Материалы:</strong> ${work.materials || 'Не указано'}</p>
+                <p style="margin: 10px 0;"><strong>💰 Цена:</strong> ${work.price || 'По запросу'}</p>
+                <p style="margin: 10px 0;"><strong>👀 Просмотров:</strong> ${work.views || 0}</p>
             `;
 
             modal.style.display = 'block';
 
             // Увеличиваем счетчик просмотров
-            work.views++;
+            work.views = (work.views || 0) + 1;
+            saveWorks();
 
             // Haptic feedback
             if (tg?.HapticFeedback) {
@@ -566,8 +842,114 @@
             }
         }
 
-        function closeModal() {
-            document.getElementById('modal').style.display = 'none';
+        function openAddWorkModal() {
+            document.getElementById('addModal').style.display = 'block';
+
+            if (tg?.HapticFeedback) {
+                tg.HapticFeedback.impactOccurred('light');
+            }
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+
+            // Очищаем форму при закрытии модального окна добавления
+            if (modalId === 'addModal') {
+                document.getElementById('addWorkForm').reset();
+            }
+        }
+
+        function handleAddWork(e) {
+            e.preventDefault();
+
+            if (!isAdmin) {
+                alert('У вас нет прав для добавления работ!');
+                return;
+            }
+
+            // Собираем данные формы
+            const formData = {
+                id: Date.now(), // Простой способ генерации ID
+                title: document.getElementById('workTitle').value.trim(),
+                description: document.getElementById('workDescription').value.trim(),
+                image: document.getElementById('imageUrl').value.trim(),
+                hashtags: document.getElementById('workHashtags').value
+                    .split(',')
+                    .map(tag => tag.trim())
+                    .filter(tag => tag)
+                    .map(tag => tag.startsWith('#') ? tag : '#' + tag),
+                dimensions: document.getElementById('workDimensions').value.trim(),
+                materials: document.getElementById('workMaterials').value.trim(),
+                price: document.getElementById('workPrice').value.trim(),
+                views: 0
+            };
+
+            // Валидация
+            if (!formData.title || !formData.description || !formData.image) {
+                alert('Заполните обязательные поля: название, описание и изображение!');
+                return;
+            }
+
+            // Проверяем URL изображения
+            if (!isValidUrl(formData.image)) {
+                alert('Введите корректный URL изображения!');
+                return;
+            }
+
+            // Добавляем работу
+            works.push(formData);
+            saveWorks();
+
+            // Обновляем интерфейс
+            updateHashtags();
+            createFilters();
+
+            // Если текущий фильтр соответствует новой работе, показываем её
+            if (currentFilter === 'all' ||
+                formData.hashtags.some(tag => tag.replace('#', '') === currentFilter)) {
+                filterWorks(currentFilter);
+            }
+
+            // Закрываем модальное окно
+            closeModal('addModal');
+
+            // Показываем уведомление
+            showNotification('✅ Работа успешно добавлена!', 'success');
+
+            // Haptic feedback
+            if (tg?.HapticFeedback) {
+                tg.HapticFeedback.impactOccurred('heavy');
+            }
+        }
+
+        function deleteWork(event, workId) {
+            event.stopPropagation(); // Предотвращаем открытие модального окна
+
+            if (!isAdmin) {
+                alert('У вас нет прав для удаления работ!');
+                return;
+            }
+
+            if (confirm('Вы уверены, что хотите удалить эту работу?')) {
+                // Находим и удаляем работу
+                const workIndex = works.findIndex(work => work.id === workId);
+                if (workIndex > -1) {
+                    const deletedWork = works[workIndex];
+                    works.splice(workIndex, 1);
+                    saveWorks();
+
+                    // Обновляем интерфейс
+                    updateHashtags();
+                    createFilters();
+                    filterWorks(currentFilter);
+
+                    showNotification(`🗑️ Работа "${deletedWork.title}" удалена`, 'success');
+
+                    if (tg?.HapticFeedback) {
+                        tg.HapticFeedback.impactOccurred('heavy');
+                    }
+                }
+            }
         }
 
         function orderWork() {
@@ -582,44 +964,158 @@
                 tg.HapticFeedback.impactOccurred('heavy');
             }
 
-            closeModal();
+            closeModal('viewModal');
+            showNotification('📞 Ваш запрос отправлен! Мы свяжемся с вами.', 'success');
         }
 
-        // Обработчики событий
-        document.addEventListener('DOMContentLoaded', () => {
-            // Симуляция загрузки
+        function saveWorks() {
+            try {
+                localStorage.setItem('galleryWorks', JSON.stringify(works));
+            } catch (e) {
+                console.error('Ошибка сохранения:', e);
+                showNotification('❌ Ошибка сохранения данных', 'error');
+            }
+        }
+
+        function isValidUrl(string) {
+            try {
+                const url = new URL(string);
+                return url.protocol === 'http:' || url.protocol === 'https:';
+            } catch (_) {
+                return false;
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            // Создаем уведомление
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? 'var(--primary-blue)' : type === 'error' ? '#ff4757' : 'var(--primary-pink)'};
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+                z-index: 2000;
+                font-weight: 500;
+                max-width: 300px;
+                animation: slideIn 0.3s ease;
+                backdrop-filter: blur(10px);
+            `;
+
+            // Добавляем стили анимации
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes slideOut {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(100%); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            // Автоматически удаляем через 3 секунды
             setTimeout(() => {
-                document.getElementById('loading').style.display = 'none';
-                renderGallery(works);
-            }, 1000);
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
 
-            // Фильтры
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const filter = e.target.getAttribute('data-filter');
-                    filterWorks(filter);
-                });
-            });
+        // Обработчики закрытия модальных окон
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal('viewModal');
+                closeModal('addModal');
+            }
+        });
 
-            // Закрытие модального окна
-            document.querySelector('.modal-close').onclick = closeModal;
-            document.getElementById('modal').onclick = (e) => {
-                if (e.target === document.getElementById('modal')) {
-                    closeModal();
+        // Закрытие по клику вне модального окна
+        ['viewModal', 'addModal'].forEach(modalId => {
+            document.getElementById(modalId).onclick = (e) => {
+                if (e.target === document.getElementById(modalId)) {
+                    closeModal(modalId);
                 }
             };
         });
 
-        // Клавиши
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeModal();
-            }
-        });
-
         // Настройка темы под Telegram
         if (tg?.colorScheme === 'dark') {
-            document.body.style.background = 'linear-gradient(135deg, #2c3e50 0%, #34495e 100%)';
+            document.documentElement.style.setProperty('--gradient', 'linear-gradient(135deg, #2c3e50 0%, #34495e 100%)');
+            document.documentElement.style.setProperty('--text-dark', '#e0e0e0');
+            document.documentElement.style.setProperty('--text-light', '#b0b0b0');
+        }
+
+        // Дополнительные утилиты для админа
+        if (isAdmin) {
+            // Горячие клавиши для админа
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey || e.metaKey) {
+                    switch(e.key) {
+                        case 'n':
+                            e.preventDefault();
+                            openAddWorkModal();
+                            break;
+                        case 's':
+                            e.preventDefault();
+                            saveWorks();
+                            showNotification('💾 Данные сохранены', 'success');
+                            break;
+                    }
+                }
+            });
+
+            // Экспорт/импорт данных для админа
+            window.exportWorks = function() {
+                const dataStr = JSON.stringify(works, null, 2);
+                const dataBlob = new Blob([dataStr], {type: 'application/json'});
+                const url = URL.createObjectURL(dataBlob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'gallery-works.json';
+                link.click();
+                showNotification('📤 Данные экспортированы', 'success');
+            };
+
+            window.importWorks = function(input) {
+                const file = input.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            const importedWorks = JSON.parse(e.target.result);
+                            if (confirm(`Импортировать ${importedWorks.length} работ? Текущие данные будут заменены.`)) {
+                                works = importedWorks;
+                                saveWorks();
+                                updateHashtags();
+                                createFilters();
+                                filterWorks('all');
+                                showNotification('📥 Данные импортированы', 'success');
+                            }
+                        } catch (err) {
+                            showNotification('❌ Ошибка импорта данных', 'error');
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+
+            console.log('🔧 Админ-режим активен. Доступные команды:');
+            console.log('- Ctrl+N: добавить работу');
+            console.log('- Ctrl+S: сохранить данные');
+            console.log('- exportWorks(): экспорт данных');
+            console.log('- importWorks(input): импорт данных');
         }
     </script>
 </body>
