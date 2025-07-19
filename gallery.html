@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Галерея работ - Когтик</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #87CEEB 0%, #FFB6C1 100%);
+            color: #333;
+            padding: 10px;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+            background: rgba(0,0,0,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .filter-btn.active {
+            background: white;
+            color: #87CEEB;
+            border-color: white;
+            transform: scale(1.05);
+        }
+
+        .filter-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .work-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .work-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .work-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .work-card:hover .work-image {
+            transform: scale(1.1);
+        }
+
+        .work-info {
+            padding: 16px;
+        }
+
+        .work-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            line-height: 1.3;
+            color: #333;
+        }
+
+        .work-description {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .work-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: #999;
+            margin-bottom: 10px;
+        }
+
+        .work-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 10px;
+        }
+
+        .tag {
+            background: linear-gradient(45deg, #87CEEB, #FFB6C1);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        .work-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #999;
+            border-top: 1px solid #f0f0f0;
+            padding-top: 10px;
+        }
+
+        .price {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .views {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+            color: white;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .empty {
+            text-align: center;
+            color: white;
+            padding: 40px;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            position: relative;
+            background: white;
+            margin: 5% auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 15px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-close {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #f5f5f5;
+        }
+
+        .modal-close:hover {
+            background: #ddd;
+            color: #333;
+        }
+
+        .modal-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 16px;
+        }
+
+        .order-btn {
+            width: 100%;
+            background: linear-gradient(45deg, #87CEEB, #FFB6C1);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 16px;
+            transition: transform 0.2s ease;
+        }
+
+        .order-btn:hover {
+            transform: scale(1.02);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 8px;
+            }
+
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 12px;
+            }
+
+            .header {
+                padding: 16px;
+            }
+
+            .header h1 {
+                font-size: 20px;
+            }
+
+            .work-card {
+                border-radius: 12px;
+            }
+
+            .work-image {
+                height: 180px;
+            }
+
+            .filters {
+                gap: 6px;
+            }
+
+            .filter-btn {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🖼️ Галерея работ</h1>
+        <p>Мастерская «Когтик» • Мебель для питомцев с 2019 года</p>
+    </div>
+
+    <div class="filters">
+        <div class="filter-btn active" data-filter="all">🔍 Все работы</div>
+        <div class="filter-btn" data-filter="cats">🐱 Для кошек</div>
+        <div class="filter-btn" data-filter="dogs">🐕 Для собак</div>
+        <div class="filter-btn" data-filter="premium">⭐ Премиум</div>
+    </div>
+
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <div>Загружаем наши работы...</div>
+    </div>
+
+    <div id="gallery" class="gallery" style="display: none;"></div>
+
+    <div id="empty" class="empty" style="display: none;">
+        <div class="empty-icon">📭</div>
+        <h3>Нет работ в этой категории</h3>
+        <p>Попробуйте выбрать другой фильтр</p>
+    </div>
+
+    <!-- Модальное окно -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-close">&times;</div>
+            <img id="modal-image" class="modal-image" alt="">
+            <h3 id="modal-title"></h3>
+            <p id="modal-description"></p>
+            <div id="modal-tags" class="work-tags"></div>
+            <div id="modal-specs"></div>
+            <button class="order-btn" onclick="orderWork()">
+                📞 Заказать эту работу
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Инициализация Telegram WebApp
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.ready();
+            tg.expand();
+            tg.enableClosingConfirmation();
+        }
+
+        // Данные работ
+        const works = [
+            {
+                id: 1,
+                title: "Многоуровневый комплекс 'Царский дворец'",
+                description: "Роскошный 5-уровневый комплекс для крупных кошек с когтеточками, домиками и лежанками из premium материалов",
+                image: "https://images.unsplash.com/photo-1545008344-4c1b3c5a5a53?w=400&h=300&fit=crop",
+                hashtags: ["#комплекс", "#премиум", "#крупныекошки", "#5уровней"],
+                category: "cats",
+                type: "premium",
+                dimensions: "180×80×60 см",
+                materials: "Березовая фанера, джут, плюш",
+                price: "15 000 - 25 000 ₽",
+                views: 145
+            },
+            {
+                id: 2,
+                title: "Настенный комплекс 'Джунгли'",
+                description: "Модульная система полок и переходов для активных кошек. Крепится к стене, экономит место в квартире",
+                image: "https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?w=400&h=300&fit=crop",
+                hashtags: ["#настенный", "#модульный", "#активные", "#экономия"],
+                category: "cats",
+                type: "wall",
+                dimensions: "200×40×160 см",
+                materials: "Массив сосны, сизаль",
+                price: "8 000 - 12 000 ₽",
+                views: 98
+            },
+            {
+                id: 3,
+                title: "Лесенка 'Комфорт'",
+                description: "Деревянная лесенка с антискользящим покрытием для пожилых и маленьких собак. Регулируемая высота",
+                image: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400&h=300&fit=crop",
+                hashtags: ["#лесенка", "#собаки", "#безопасность", "#пожилые"],
+                category: "dogs",
+                type: "stairs",
+                dimensions: "60×35×40 см",
+                materials: "Массив дуба, резина",
+                price: "3 000 - 5 000 ₽",
+                views: 67
+            },
+            {
+                id: 4,
+                title: "Домик-берлога 'Уютный'",
+                description: "Закрытый домик-укрытие для пугливых кошек с мягкой подушкой и теплоизоляцией",
+                image: "https://images.unsplash.com/photo-1548247416-ec66f4900b2e?w=400&h=300&fit=crop",
+                hashtags: ["#домик", "#укрытие", "#уют", "#берлога"],
+                category: "cats",
+                type: "house",
+                dimensions: "45×45×35 см",
+                materials: "Фанера, искусственный мех",
+                price: "2 500 - 4 000 ₽",
+                views: 123
+            },
+            {
+                id: 5,
+                title: "Игровой комплекс 'Космос'",
+                description: "Футуристический дизайн с LED-подсветкой и интерактивными элементами для современных интерьеров",
+                image: "https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=400&h=300&fit=crop",
+                hashtags: ["#космос", "#LED", "#интерактив", "#дизайн"],
+                category: "cats",
+                type: "premium",
+                dimensions: "150×70×180 см",
+                materials: "Пластик, металл, LED",
+                price: "20 000 - 30 000 ₽",
+                views: 234
+            },
+            {
+                id: 6,
+                title: "Пандус 'Гигант'",
+                description: "Складной пандус для загрузки крупных собак в автомобиль. Легкий и прочный алюминиевый каркас",
+                image: "https://images.unsplash.com/photo-1552053831-71594a27632d?w=400&h=300&fit=crop",
+                hashtags: ["#пандус", "#авто", "#крупныесобаки", "#складной"],
+                category: "dogs",
+                type: "ramp",
+                dimensions: "180×40×8 см",
+                materials: "Алюминий, резина",
+                price: "4 500 - 7 000 ₽",
+                views: 89
+            }
+        ];
+
+        let currentFilter = 'all';
+        let currentWorks = works;
+
+        // Функции
+        function renderGallery(worksToShow) {
+            const gallery = document.getElementById('gallery');
+            const empty = document.getElementById('empty');
+
+            if (!worksToShow.length) {
+                gallery.style.display = 'none';
+                empty.style.display = 'block';
+                return;
+            }
+
+            empty.style.display = 'none';
+            gallery.style.display = 'grid';
+            gallery.innerHTML = '';
+
+            worksToShow.forEach(work => {
+                const card = createWorkCard(work);
+                gallery.appendChild(card);
+            });
+        }
+
+        function createWorkCard(work) {
+            const card = document.createElement('div');
+            card.className = 'work-card';
+            card.onclick = () => openModal(work);
+
+            card.innerHTML = `
+                <img src="${work.image}" alt="${work.title}" class="work-image" loading="lazy">
+                <div class="work-info">
+                    <h3 class="work-title">${work.title}</h3>
+                    <p class="work-description">${work.description}</p>
+                    <div class="work-meta">
+                        <span>📏 ${work.dimensions}</span>
+                        <span>🔨 ${work.materials.split(',')[0]}</span>
+                    </div>
+                    <div class="work-tags">
+                        ${work.hashtags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                    </div>
+                    <div class="work-stats">
+                        <div class="price">${work.price}</div>
+                        <div class="views">👀 ${work.views}</div>
+                    </div>
+                </div>
+            `;
+
+            return card;
+        }
+
+        function filterWorks(filter) {
+            currentFilter = filter;
+
+            // Обновляем кнопки фильтров
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
+
+            // Фильтруем работы
+            if (filter === 'all') {
+                currentWorks = works;
+            } else if (filter === 'premium') {
+                currentWorks = works.filter(work => work.type === 'premium');
+            } else {
+                currentWorks = works.filter(work => work.category === filter);
+            }
+
+            renderGallery(currentWorks);
+
+            // Haptic feedback для Telegram
+            if (tg?.HapticFeedback) {
+                tg.HapticFeedback.impactOccurred('light');
+            }
+        }
+
+        function openModal(work) {
+            const modal = document.getElementById('modal');
+            const modalImage = document.getElementById('modal-image');
+            const modalTitle = document.getElementById('modal-title');
+            const modalDescription = document.getElementById('modal-description');
+            const modalTags = document.getElementById('modal-tags');
+            const modalSpecs = document.getElementById('modal-specs');
+
+            modalImage.src = work.image;
+            modalImage.alt = work.title;
+            modalTitle.textContent = work.title;
+            modalDescription.textContent = work.description;
+            modalTags.innerHTML = work.hashtags.map(tag => `<span class="tag">${tag}</span>`).join('');
+            modalSpecs.innerHTML = `
+                <p><strong>📏 Размеры:</strong> ${work.dimensions}</p>
+                <p><strong>🔨 Материалы:</strong> ${work.materials}</p>
+                <p><strong>💰 Цена:</strong> ${work.price}</p>
+                <p><strong>👀 Просмотров:</strong> ${work.views}</p>
+            `;
+
+            modal.style.display = 'block';
+
+            // Увеличиваем счетчик просмотров
+            work.views++;
+
+            // Haptic feedback
+            if (tg?.HapticFeedback) {
+                tg.HapticFeedback.impactOccurred('medium');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        function orderWork() {
+            if (tg?.sendData) {
+                tg.sendData(JSON.stringify({
+                    action: 'order_work',
+                    message: 'Хочу заказать изделие из галереи'
+                }));
+            }
+
+            if (tg?.HapticFeedback) {
+                tg.HapticFeedback.impactOccurred('heavy');
+            }
+
+            closeModal();
+        }
+
+        // Обработчики событий
+        document.addEventListener('DOMContentLoaded', () => {
+            // Симуляция загрузки
+            setTimeout(() => {
+                document.getElementById('loading').style.display = 'none';
+                renderGallery(works);
+            }, 1000);
+
+            // Фильтры
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const filter = e.target.getAttribute('data-filter');
+                    filterWorks(filter);
+                });
+            });
+
+            // Закрытие модального окна
+            document.querySelector('.modal-close').onclick = closeModal;
+            document.getElementById('modal').onclick = (e) => {
+                if (e.target === document.getElementById('modal')) {
+                    closeModal();
+                }
+            };
+        });
+
+        // Клавиши
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Настройка темы под Telegram
+        if (tg?.colorScheme === 'dark') {
+            document.body.style.background = 'linear-gradient(135deg, #2c3e50 0%, #34495e 100%)';
+        }
+    </script>
+</body>
+</html>
