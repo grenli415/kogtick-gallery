@@ -3,19 +3,527 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Галерея работ - Когтик</title>
+    <title>Галерея работ - Мастерская Когтик</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        :root {
-            --primary-blue: #87CEEB;
-            --primary-pink: #FFB6C1;
-            --primary-white: #FFFFFF;
-            --gradient: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-pink) 100%);
-            --text-dark: #333;
-            --text-light: #666;
-            --shadow: 0 10px 30px rgba(135, 206, 235, 0.3);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(180deg, #4A90E2 0%, #E91E63 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Верхняя голубая полоса */
+        .header {
+            background: #4A90E2;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        .header h1 {
+            font-size: 22px;
+            font-weight: bold;
+        }
+        
+        /* Кнопка фильтров */
+        .filters-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        /* Модальное окно фильтров */
+        .filters-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        
+        .filters-content {
+            background: white;
+            margin: 10% auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 400px;
+            border-radius: 15px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        
+        .filter-group {
+            margin-bottom: 20px;
+        }
+        
+        .filter-group h3 {
+            margin-bottom: 10px;
+            color: #4A90E2;
+        }
+        
+        .filter-option {
+            display: block;
+            margin: 8px 0;
+        }
+        
+        .filter-option input {
+            margin-right: 8px;
+        }
+        
+        /* Основное содержимое */
+        .content {
+            background: #E91E63;
+            min-height: calc(100vh - 80px);
+            padding: 20px;
+        }
+        
+        /* Сетка работ */
+        .works-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Карточка работы */
+        .work-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+        
+        .work-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .work-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+        
+        .work-info {
+            background: #f5f5f5;
+            padding: 15px;
+        }
+        
+        .work-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .work-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        
+        .tag {
+            background: #4A90E2;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        
+        /* Кнопка лайка */
+        .like-btn {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: none;
+            background: #ccc;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            opacity: 0;
+        }
+        
+        .work-card:hover .like-btn {
+            opacity: 1;
+        }
+        
+        .like-btn.liked {
+            background: #E91E63;
+            color: white;
+            opacity: 1;
+        }
+        
+        .likes-count {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        
+        /* Кнопка добавления (только для админа) */
+        .add-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #4A90E2;
+            border: none;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: none;
+        }
+        
+        .add-btn.admin {
+            display: block;
+        }
+        
+        /* Модальное окно добавления работы */
+        .add-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        
+        .add-content {
+            background: white;
+            margin: 5% auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 15px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .btn {
+            background: #4A90E2;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        
+        .btn-cancel {
+            background: #ccc;
+        }
+        
+        /* Сообщение об отсутствии работ */
+        .no-works {
+            text-align: center;
+            color: white;
+            font-size: 18px;
+            margin-top: 100px;
+        }
+        
+        /* Статистика админа */
+        .admin-stats {
+            background: rgba(255,255,255,0.9);
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        .stats-item {
+            display: inline-block;
+            margin: 5px 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- Верхняя полоса -->
+    <div class="header">
+        <h1>🖼 Галерея работ</h1>
+        <button class="filters-btn" onclick="openFilters()">Фильтры</button>
+    </div>
+
+    <!-- Основное содержимое -->
+    <div class="content">
+        <!-- Статистика для админа -->
+        <div id="adminStats" class="admin-stats" style="display: none;">
+            <div class="stats-item">❤️ Лайков сегодня: <span id="todayLikes">0</span></div>
+            <div class="stats-item">👁 Всего просмотров: <span id="totalViews">0</span></div>
+            <div class="stats-item">📸 Работ в галерее: <span id="totalWorks">0</span></div>
+        </div>
+
+        <!-- Сетка работ -->
+        <div id="worksGrid" class="works-grid"></div>
+        
+        <!-- Сообщение об отсутствии работ -->
+        <div id="noWorksMessage" class="no-works" style="display: none;">
+            <p>📝 Пожалуйста, поменяйте фильтры</p>
+            <p>У нас нет таких работ пока что</p>
+        </div>
+    </div>
+
+    <!-- Кнопка добавления (только для админа) -->
+    <button id="addBtn" class="add-btn" onclick="openAddModal()">+</button>
+
+    <!-- Модальное окно фильтров -->
+    <div id="filtersModal" class="filters-modal">
+        <div class="filters-content">
+            <h3>🔍 Фильтры</h3>
+            
+            <div class="filter-group">
+                <h4>Тип питомца:</h4>
+                <label class="filter-option">
+                    <input type="radio" name="pet" value="all" checked> Все
+                </label>
+                <label class="filter-option">
+                    <input type="radio" name="pet" value="cats"> Для кошек
+                </label>
+                <label class="filter-option">
+                    <input type="radio" name="pet" value="dogs"> Для собак
+                </label>
+            </div>
+
+            <div class="filter-group">
+                <h4>Тип комплекса:</h4>
+                <label class="filter-option">
+                    <input type="radio" name="type" value="all" checked> Все
+                </label>
+                <label class="filter-option">
+                    <input type="radio" name="type" value="wall"> Настенный
+                </label>
+                <label class="filter-option">
+                    <input type="radio" name="type" value="floor"> Напольный
+                </label>
+            </div>
+
+            <div class="filter-group">
+                <h4>Порода кошек:</h4>
+                <label class="filter-option">
+                    <input type="radio" name="breed" value="all" checked> Все породы
+                </label>
+                <label class="filter-option">
+                    <input type="radio" name="breed" value="maine-coon"> Мейн-кун
+                </label>
+                <label class="filter-option">
+                    <input type="radio" name="breed" value="persian"> Персидская
+                </label>
+                <label class="filter-option">
+                    <input type="radio" name="breed" value="british"> Британская
+                </label>
+                <label class="filter-option">
+                    <input type="radio" name="breed" value="scottish"> Шотландская
+                </label>
+                <label class="filter-option">
+                    <input type="radio" name="breed" value="siamese"> Сиамская
+                </label>
+                <label class="filter-option">
+                    <input type="radio" name="breed" value="ragdoll"> Рэгдолл
+                </label>
+                <label class="filter-option">
+                    <input type="radio" name="breed" value="bengal"> Бенгальская
+                </label>
+                <label class="filter-option">
+                    <input type="radio" name="breed" value="abyssinian"> Абиссинская
+                </label>
+                <label class="filter-option">
+                    <input type="radio" name="breed" value="russian-blue"> Русская голубая
+                </label>
+                <label class="filter-option">
+                    <input type="radio" name="breed" value="sphynx"> Сфинкс
+                </label>
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn" onclick="applyFilters()">Применить</button>
+                <button class="btn btn-cancel" onclick="closeFilters()">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно добавления работы -->
+    <div id="addModal" class="add-modal">
+        <div class="add-content">
+            <h3>➕ Добавить работу</h3>
+            
+            <div class="form-group">
+                <label>Изображение:</label>
+                <input type="file" id="workImage" accept="image/*">
+            </div>
+            
+            <div class="form-group">
+                <label>Название:</label>
+                <input type="text" id="workTitle" placeholder="Название работы">
+            </div>
+            
+            <div class="form-group">
+                <label>Хештеги (через пробел):</label>
+                <textarea id="workTags" rows="3" placeholder="#кошки #настенный #мейн-кун"></textarea>
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn" onclick="addWork()">Добавить</button>
+                <button class="btn btn-cancel" onclick="closeAddModal()">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Инициализация Telegram WebApp
+        let tg = window.Telegram.WebApp;
+        tg.ready();
+
+        // Данные пользователя
+        let userId = tg.initDataUnsafe?.user?.id || 'demo_user';
+        let isAdmin = [123456789, 987654321].includes(parseInt(userId)); // Ваши admin ID
+
+        // Хранилище данных
+        let works = [];
+        let likes = {};
+        let stats = {
+            todayLikes: 0,
+            totalViews: 0
+        };
+
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            if (isAdmin) {
+                document.getElementById('addBtn').classList.add('admin');
+                document.getElementById('adminStats').style.display = 'block';
+                updateAdminStats();
+            }
+            renderWorks();
+            
+            // Увеличиваем счетчик просмотров
+            stats.totalViews++;
+            saveStats();
+        });
+
+        // Загрузка данных
+        function loadData() {
+            try {
+                works = JSON.parse(localStorage.getItem('gallery_works') || '[]');
+                likes = JSON.parse(localStorage.getItem('gallery_likes') || '{}');
+                stats = JSON.parse(localStorage.getItem('gallery_stats') || '{"todayLikes": 0, "totalViews": 0}');
+            } catch (e) {
+                console.error('Ошибка загрузки данных:', e);
+            }
         }
 
+        // Сохранение данных
+        function saveData() {
+            localStorage.setItem('gallery_works', JSON.stringify(works));
+            localStorage.setItem('gallery_likes', JSON.stringify(likes));
+        }
+
+        function saveStats() {
+            localStorage.setItem('gallery_stats', JSON.stringify(stats));
+        }
+
+        // Отображение работ
+        function renderWorks() {
+            const grid = document.getElementById('worksGrid');
+            const noWorksMessage = document.getElementById('noWorksMessage');
+            
+            if (works.length === 0) {
+                grid.style.display = 'none';
+                noWorksMessage.style.display = 'block';
+                return;
+            }
+
+            grid.style.display = 'grid';
+            noWorksMessage.style.display = 'none';
+            
+            grid.innerHTML = works.map(work => `
+                <div class="work-card">
+                    <img src="${work.image}" alt="${work.title}" class="work-image">
+                    <div class="likes-count">❤️ ${work.likes || 0}</div>
+                    <div class="work-info">
+                        <div class="work-title">${work.title}</div>
+                        <div class="work-tags">
+                            ${work.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                    <button class="like-btn ${likes[work.id] ? 'liked' : ''}" onclick="toggleLike('${work.id}')">
+                        ${likes[work.id] ? '💖' : '🤍'}
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // Переключение лайка
+        function toggleLike(workId) {
+            const work = works.find(w => w.id === workId);
+            if (!work) return;
+
+            if (likes[workId]) {
+                delete likes[workId];
+                work.likes = Math.max(0, (work.likes || 0) -undefinedСоздам полноценную веб-галерею с нужным функционалом. Вот все файлы:
+
+## 1. HTML файл галереи (`gallery.html`):
+
+```html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Галерея работ - Когтик</title>
+    <style>
         * {
             margin: 0;
             padding: 0;
@@ -24,1098 +532,732 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--gradient);
-            color: var(--text-dark);
-            padding: 10px;
+            background: linear-gradient(to bottom, #4A90E2 0%, #4A90E2 15%, #FFB6C1 15%, #FFB6C1 100%);
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
         .header {
-            text-align: center;
+            background: #4A90E2;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: white;
-            margin-bottom: 20px;
-            background: rgba(255,255,255,0.1);
-            padding: 20px;
-            border-radius: 20px;
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255,255,255,0.2);
+            font-weight: bold;
+            font-size: 18px;
+            position: relative;
         }
 
-        .header h1 {
-            font-size: 26px;
-            margin-bottom: 8px;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
-        }
-
-        .header p {
-            font-size: 14px;
-            opacity: 0.9;
-        }
-
-        .admin-header {
-            display: none;
-            background: rgba(255,182,193,0.9);
-            color: var(--text-dark);
-            padding: 15px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            text-align: center;
-            backdrop-filter: blur(10px);
-            border: 2px solid var(--primary-pink);
-        }
-
-        .admin-controls {
-            display: none;
-            background: rgba(255,255,255,0.95);
-            padding: 20px;
-            border-radius: 20px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow);
-            border: 2px solid var(--primary-blue);
-        }
-
-        .add-work-btn {
-            background: var(--gradient);
+        .filters-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.2);
             color: white;
             border: none;
-            padding: 12px 20px;
-            border-radius: 25px;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .filters-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .filters-content {
+            background: white;
+            margin: 50px auto;
+            padding: 20px;
+            max-width: 400px;
+            border-radius: 15px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .filter-section {
+            margin-bottom: 20px;
+        }
+
+        .filter-section h3 {
+            color: #4A90E2;
+            margin-bottom: 10px;
             font-size: 16px;
-            font-weight: bold;
+        }
+
+        .filter-option {
+            display: block;
+            margin: 5px 0;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin: 0 auto 15px auto;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(135, 206, 235, 0.4);
+            padding: 5px;
+            border-radius: 5px;
+            transition: background 0.2s;
         }
 
-        .add-work-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(135, 206, 235, 0.5);
+        .filter-option:hover {
+            background: #f0f0f0;
         }
 
-        .filters {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-            padding: 0 10px;
-        }
-
-        .filter-btn {
-            background: rgba(255,255,255,0.2);
-            border: 2px solid rgba(255,255,255,0.3);
-            color: white;
-            padding: 10px 16px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .filter-btn.active {
-            background: var(--primary-white);
-            color: var(--primary-blue);
-            border-color: var(--primary-white);
-            transform: scale(1.05);
-            box-shadow: 0 5px 20px rgba(255,255,255,0.3);
-        }
-
-        .filter-btn:hover:not(.active) {
-            background: rgba(255,255,255,0.3);
-            transform: translateY(-2px);
-            border-color: rgba(255,255,255,0.5);
+        .filter-option input {
+            margin-right: 8px;
         }
 
         .gallery {
+            padding: 20px 15px;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
-            max-width: 1400px;
-            margin: 0 auto;
         }
 
-        .work-card {
-            background: var(--primary-white);
-            border-radius: 20px;
+        .work-item {
+            background: white;
+            border-radius: 15px;
             overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: all 0.3s ease;
-            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
             position: relative;
-            border: 2px solid transparent;
         }
 
-        .work-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 50px rgba(135, 206, 235, 0.4);
-            border-color: var(--primary-blue);
+        .work-item:hover {
+            transform: translateY(-5px);
         }
 
         .work-image {
             width: 100%;
-            height: 220px;
+            height: 200px;
             object-fit: cover;
-            transition: transform 0.3s ease;
-        }
-
-        .work-card:hover .work-image {
-            transform: scale(1.1);
+            cursor: pointer;
         }
 
         .work-info {
-            padding: 18px;
+            background: #f5f5f5;
+            padding: 15px;
         }
 
         .work-title {
-            font-size: 18px;
             font-weight: bold;
-            margin-bottom: 10px;
-            line-height: 1.3;
-            color: var(--text-dark);
+            margin-bottom: 8px;
+            color: #333;
         }
 
-        .work-description {
-            color: var(--text-light);
-            font-size: 14px;
-            margin-bottom: 15px;
-            line-height: 1.4;
-        }
-
-        .work-meta {
+        .work-hashtags {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .hashtag {
+            background: #4A90E2;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
             font-size: 12px;
-            color: var(--text-light);
-            margin-bottom: 12px;
-            flex-wrap: wrap;
-            gap: 5px;
         }
 
-        .work-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-bottom: 12px;
-        }
-
-        .tag {
-            background: var(--gradient);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 11px;
-            font-weight: 500;
-            box-shadow: 0 2px 8px rgba(135, 206, 235, 0.3);
-        }
-
-        .work-stats {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 13px;
-            border-top: 1px solid #f0f0f0;
-            padding-top: 12px;
-        }
-
-        .price {
-            font-weight: bold;
-            color: var(--primary-blue);
-            font-size: 14px;
-        }
-
-        .views {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            color: var(--text-light);
-        }
-
-        .admin-badge {
+        .like-btn {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background: var(--primary-pink);
+            bottom: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: #ccc;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            opacity: 0;
+        }
+
+        .work-item:hover .like-btn {
+            opacity: 1;
+        }
+
+        .like-btn.liked {
+            background: #FFB6C1;
             color: white;
-            padding: 4px 8px;
-            border-radius: 10px;
+            opacity: 1;
+        }
+
+        .like-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #4A90E2;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
             font-size: 10px;
-            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 18px;
         }
 
-        .delete-btn {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: #ff4757;
+        .admin-add-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #4A90E2;
             color: white;
             border: none;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
+            font-size: 24px;
             cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
             display: none;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            transition: all 0.2s ease;
         }
 
-        .delete-btn:hover {
-            background: #ff3742;
-            transform: scale(1.1);
+        .admin-stats {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            margin: 15px;
+            border-radius: 10px;
+            display: none;
         }
 
-        .loading {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 200px;
-            color: white;
-        }
-
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(255,255,255,0.3);
-            border-top: 4px solid white;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .empty {
+        .no-results {
             text-align: center;
-            color: white;
-            padding: 50px 20px;
+            color: #666;
+            font-size: 18px;
+            margin-top: 100px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            margin: 50px 20px;
         }
 
-        .empty-icon {
-            font-size: 60px;
-            margin-bottom: 20px;
-        }
-
-        /* Модальные окна */
         .modal {
             display: none;
             position: fixed;
-            z-index: 1000;
-            left: 0;
             top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(8px);
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
         }
 
         .modal-content {
-            position: relative;
             background: white;
-            margin: 3% auto;
-            padding: 25px;
-            width: 90%;
-            max-width: 600px;
-            border-radius: 20px;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-
-        .modal-close {
-            position: absolute;
-            right: 20px;
-            top: 20px;
-            font-size: 28px;
-            cursor: pointer;
-            color: var(--text-light);
-            width: 35px;
-            height: 35px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background: #f5f5f5;
-            transition: all 0.2s ease;
-        }
-
-        .modal-close:hover {
-            background: var(--primary-pink);
-            color: white;
-            transform: scale(1.1);
-        }
-
-        .modal-image {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
+            margin: 5% auto;
+            padding: 20px;
+            max-width: 500px;
             border-radius: 15px;
-            margin-bottom: 20px;
+            max-height: 80vh;
+            overflow-y: auto;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
+            color: #4A90E2;
             font-weight: bold;
-            color: var(--text-dark);
         }
 
-        .form-group input,
-        .form-group textarea {
+        .form-group input, .form-group textarea {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
             font-size: 14px;
-            transition: border-color 0.3s ease;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--primary-blue);
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 80px;
         }
 
         .btn {
-            background: var(--gradient);
-            color: white;
+            padding: 10px 20px;
             border: none;
-            padding: 12px 24px;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: bold;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            margin-right: 10px;
-            box-shadow: 0 5px 15px rgba(135, 206, 235, 0.4);
+            margin: 5px;
+            font-size: 14px;
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(135, 206, 235, 0.5);
+        .btn-primary {
+            background: #4A90E2;
+            color: white;
         }
 
         .btn-secondary {
-            background: #6c757d;
-            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+            background: #ccc;
+            color: #333;
         }
 
-        .btn-secondary:hover {
-            background: #5a6268;
-            box-shadow: 0 8px 25px rgba(108, 117, 125, 0.5);
-        }
-
-        .hashtags-input {
-            background: #f8f9fa;
-            border: 1px dashed var(--primary-blue);
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 12px;
-            color: var(--text-light);
+        .close {
+            float: right;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
         }
 
         @media (max-width: 768px) {
-            body {
-                padding: 8px;
-            }
-
-            .gallery {
-                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-                gap: 15px;
-            }
-
-            .header {
-                padding: 16px;
-            }
-
-            .header h1 {
-                font-size: 22px;
-            }
-
-            .work-image {
-                height: 200px;
-            }
-
-            .filters {
-                gap: 6px;
-            }
-
-            .filter-btn {
-                padding: 8px 12px;
-                font-size: 12px;
-            }
-
-            .modal-content {
-                width: 95%;
-                margin: 5% auto;
-                padding: 20px;
-            }
-        }
-
-        @media (max-width: 480px) {
             .gallery {
                 grid-template-columns: 1fr;
+                padding: 15px 10px;
             }
-
-            .filters {
-                justify-content: flex-start;
-                overflow-x: auto;
-                padding: 0 10px;
+            
+            .filters-content {
+                margin: 20px;
+                max-height: 90vh;
             }
         }
     </style>
 </head>
 <body>
-    <div class="admin-header" id="adminHeader">
-        <h2>🔧 Режим администратора</h2>
-        <p>Вы можете добавлять и удалять работы</p>
-    </div>
-
     <div class="header">
-        <h1>🖼️ Галерея работ</h1>
-        <p>Мастерская «Когтик» • Мебель для питомцев с 2019 года</p>
+        🐾 Галерея работ «Когтик»
+        <button class="filters-btn" onclick="openFilters()">Фильтры</button>
     </div>
 
-    <div class="admin-controls" id="adminControls">
-        <button class="add-work-btn" onclick="openAddWorkModal()">
-            <span>➕</span> Добавить работу
-        </button>
+    <div id="adminStats" class="admin-stats">
+        <h3>📊 Статистика за сегодня</h3>
+        <p id="todayLikes">Лайков: 0</p>
+        <p id="totalWorks">Работ: 0</p>
     </div>
 
-    <div class="filters" id="filters">
-        <div class="filter-btn active" data-filter="all">🔍 Все работы</div>
-        <!-- Фильтры будут добавлены динамически -->
+    <div class="gallery" id="gallery">
+        <!-- Работы загружаются динамически -->
     </div>
 
-    <div id="loading" class="loading">
-        <div class="spinner"></div>
-        <div>Загружаем наши работы...</div>
+    <div class="no-results" id="noResults" style="display: none;">
+        Пожалуйста, поменяйте фильтры - у нас нет таких работ пока что 😊
     </div>
 
-    <div id="gallery" class="gallery" style="display: none;"></div>
+    <!-- Модальное окно фильтров -->
+    <div id="filtersModal" class="filters-modal">
+        <div class="filters-content">
+            <span class="close" onclick="closeFilters()">&times;</span>
+            <h2 style="color: #4A90E2; margin-bottom: 20px;">Фильтры</h2>
+            
+            <div class="filter-section">
+                <h3>Для кого</h3>
+                <label class="filter-option">
+                    <input type="checkbox" name="pet" value="кошки"> Для кошек
+                </label>
+                <label class="filter-option">
+                    <input type="checkbox" name="pet" value="собаки"> Для собак
+                </label>
+            </div>
 
-    <div id="empty" class="empty" style="display: none;">
-        <div class="empty-icon">📭</div>
-        <h3>Нет работ в этой категории</h3>
-        <p>Попробуйте выбрать другой фильтр</p>
-    </div>
+            <div class="filter-section">
+                <h3>Тип комплекса</h3>
+                <label class="filter-option">
+                    <input type="checkbox" name="type" value="настенный"> Настенный
+                </label>
+                <label class="filter-option">
+                    <input type="checkbox" name="type" value="напольный"> Напольный
+                </label>
+            </div>
 
-    <!-- Модальное окно просмотра работы -->
-    <div id="viewModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-close" onclick="closeModal('viewModal')">&times;</div>
-            <img id="modalImage" class="modal-image" alt="">
-            <h3 id="modalTitle"></h3>
-            <p id="modalDescription"></p>
-            <div id="modalTags" class="work-tags"></div>
-            <div id="modalSpecs"></div>
-            <button class="btn" onclick="orderWork()" style="width: 100%; margin-top: 20px;">
-                📞 Заказать эту работу
-            </button>
+            <div class="filter-section">
+                <h3>Породы кошек</h3>
+                <label class="filter-option">
+                    <input type="checkbox" name="breed" value="мейн-кун"> Мейн-кун
+                </label>
+                <label class="filter-option">
+                    <input type="checkbox" name="breed" value="британская"> Британская
+                </label>
+                <label class="filter-option">
+                    <input type="checkbox" name="breed" value="шотландская"> Шотландская
+                </label>
+                <label class="filter-option">
+                    <input type="checkbox" name="breed" value="персидская"> Персидская
+                </label>
+                <label class="filter-option">
+                    <input type="checkbox" name="breed" value="сиамская"> Сиамская
+                </label>
+                <label class="filter-option">
+                    <input type="checkbox" name="breed" value="русская-голубая"> Русская голубая
+                </label>
+                <label class="filter-option">
+                    <input type="checkbox" name="breed" value="сфинкс"> Сфинкс
+                </label>
+                <label class="filter-option">
+                    <input type="checkbox" name="breed" value="бенгальская"> Бенгальская
+                </label>
+                <label class="filter-option">
+                    <input type="checkbox" name="breed" value="абиссинская"> Абиссинская
+                </label>
+                <label class="filter-option">
+                    <input type="checkbox" name="breed" value="рэгдолл"> Рэгдолл
+                </label>
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn btn-primary" onclick="applyFilters()">Применить</button>
+                <button class="btn btn-secondary" onclick="clearFilters()">Очистить</button>
+                <button class="btn btn-secondary" onclick="closeFilters()">Закрыть</button>
+            </div>
         </div>
     </div>
 
     <!-- Модальное окно добавления работы -->
-    <div id="addModal" class="modal">
+    <div id="addWorkModal" class="modal">
         <div class="modal-content">
-            <div class="modal-close" onclick="closeModal('addModal')">&times;</div>
-            <h3 style="margin-bottom: 20px;">➕ Добавить новую работу</h3>
-
-            <form id="addWorkForm">
-                <div class="form-group">
-                    <label>🖼️ URL изображения:</label>
-                    <input type="url" id="imageUrl" required placeholder="https://example.com/image.jpg">
-                </div>
-
-                <div class="form-group">
-                    <label>📝 Название комплекса:</label>
-                    <input type="text" id="workTitle" required placeholder="Комплекс 'Название'">
-                </div>
-
-                <div class="form-group">
-                    <label>📄 Описание:</label>
-                    <textarea id="workDescription" required placeholder="Подробное описание работы..."></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label>🏷️ Хэштеги (через запятую):</label>
-                    <input type="text" id="workHashtags" placeholder="#комплекс, #премиум, #кошки" class="hashtags-input">
-                    <small style="color: var(--text-light);">Хэштеги будут использоваться для фильтров</small>
-                </div>
-
-                <div class="form-group">
-                    <label>📏 Размеры:</label>
-                    <input type="text" id="workDimensions" placeholder="180×80×60 см">
-                </div>
-
-                <div class="form-group">
-                    <label>🔨 Материалы:</label>
-                    <input type="text" id="workMaterials" placeholder="Березовая фанера, джут">
-                </div>
-
-                <div class="form-group">
-                    <label>💰 Цена:</label>
-                    <input type="text" id="workPrice" placeholder="15 000 - 25 000 ₽">
-                </div>
-
-                <div style="text-align: center; margin-top: 25px;">
-                    <button type="submit" class="btn">💾 Сохранить работу</button>
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('addModal')">❌ Отмена</button>
-                </div>
-            </form>
+            <span class="close" onclick="closeAddModal()">&times;</span>
+            <h2 style="color: #4A90E2;">Добавить работу</h2>
+            
+            <div class="form-group">
+                <label>Название работы:</label>
+                <input type="text" id="workTitle" placeholder="Например: Комплекс для мейн-куна">
+            </div>
+            
+            <div class="form-group">
+                <label>Изображение:</label>
+                <input type="file" id="workImage" accept="image/*">
+            </div>
+            
+            <div class="form-group">
+                <label>Хэштеги (через запятую):</label>
+                <textarea id="workHashtags" placeholder="кошки, настенный, мейн-кун, премиум"></textarea>
+            </div>
+            
+            <div style="text-align: center;">
+                <button class="btn btn-primary" onclick="addWork()">Добавить</button>
+                <button class="btn btn-secondary" onclick="closeAddModal()">Отмена</button>
+            </div>
         </div>
     </div>
 
+    <button id="adminAddBtn" class="admin-add-btn" onclick="openAddModal()">+</button>
+
     <script>
-        // Инициализация Telegram WebApp
-        const tg = window.Telegram?.WebApp;
+        let works = [];
+        let likes = {};
+        let currentFilters = { pet: [], type: [], breed: [] };
         let isAdmin = false;
 
-        if (tg) {
-            tg.ready();
-            tg.expand();
-            tg.enableClosingConfirmation();
-
-            // Проверяем права админа через initData
-            const initData = tg.initData;
-            if (initData) {
-                // Здесь можно добавить проверку админских прав
-                // isAdmin = checkAdminRights(initData);
-                isAdmin = true; // Для демо - включаем админ режим
-            }
-        }
-
-        // Данные работ (загружаются из localStorage или API)
-        let works = JSON.parse(localStorage.getItem('galleryWorks')) || [
-            {
-                id: 1,
-                title: "Многоуровневый комплекс 'Царский дворец'",
-                description: "Роскошный 5-уровневый комплекс для крупных кошек с когтеточками, домиками и лежанками из premium материалов",
-                image: "https://images.unsplash.com/photo-1545008344-4c1b3c5a5a53?w=400&h=300&fit=crop",
-                hashtags: ["#комплекс", "#премиум", "#крупныекошки", "#5уровней"],
-                dimensions: "180×80×60 см",
-                materials: "Березовая фанера, джут, плюш",
-                price: "15 000 - 25 000 ₽",
-                views: 145
-            },
-            {
-                id: 2,
-                title: "Настенный комплекс 'Джунгли'",
-                description: "Модульная система полок и переходов для активных кошек. Крепится к стене, экономит место в квартире",
-                image: "https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?w=400&h=300&fit=crop",
-                hashtags: ["#настенный", "#модульный", "#активные", "#кошки"],
-                dimensions: "200×40×160 см",
-                materials: "Массив сосны, сизаль",
-                price: "8 000 - 12 000 ₽",
-                views: 98
-            },
-            {
-                id: 3,
-                title: "Лесенка 'Комфорт'",
-                description: "Деревянная лесенка с антискользящим покрытием для пожилых и маленьких собак. Регулируемая высота",
-                image: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400&h=300&fit=crop",
-                hashtags: ["#лесенка", "#собаки", "#безопасность", "#пожилые"],
-                dimensions: "60×35×40 см",
-                materials: "Массив дуба, резина",
-                price: "3 000 - 5 000 ₽",
-                views: 67
-            },
-            {
-                id: 4,
-                title: "Домик-берлога 'Уютный'",
-                description: "Закрытый домик-укрытие для пугливых кошек с мягкой подушкой и теплоизоляцией",
-                image: "https://images.unsplash.com/photo-1548247416-ec66f4900b2e?w=400&h=300&fit=crop",
-                hashtags: ["#домик", "#укрытие", "#уют", "#кошки"],
-                dimensions: "45×45×35 см",
-                materials: "Фанера, искусственный мех",
-                price: "2 500 - 4 000 ₽",
-                views: 123
-            }
-        ];
-
-        let currentFilter = 'all';
-        let currentWorks = works;
-        let allHashtags = new Set();
-
         // Инициализация
-        document.addEventListener('DOMContentLoaded', () => {
-            initializeApp();
-
-            // Обработчик формы добавления работы
-            document.getElementById('addWorkForm').addEventListener('submit', handleAddWork);
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAdminStatus();
+            loadWorks();
+            loadLikes();
+            renderGallery();
+            
+            if (isAdmin) {
+                updateAdminStats();
+            }
         });
 
-        function initializeApp() {
-            // Показываем админ-панель если админ
-            if (isAdmin) {
-                document.getElementById('adminHeader').style.display = 'block';
-                document.getElementById('adminControls').style.display = 'block';
-            }
-
-            // Собираем все хэштеги и создаем фильтры
-            updateHashtags();
-            createFilters();
-
-            // Симулируем загрузку
-            setTimeout(() => {
-                document.getElementById('loading').style.display = 'none';
-                renderGallery(works);
-            }, 800);
-        }
-
-        function updateHashtags() {
-            allHashtags.clear();
-            works.forEach(work => {
-                work.hashtags.forEach(tag => {
-                    allHashtags.add(tag.replace('#', ''));
-                });
-            });
-        }
-
-        function createFilters() {
-            const filtersContainer = document.getElementById('filters');
-            const allBtn = filtersContainer.querySelector('[data-filter="all"]');
-
-            // Удаляем старые фильтры, кроме "Все работы"
-            const oldFilters = filtersContainer.querySelectorAll('.filter-btn:not([data-filter="all"])');
-            oldFilters.forEach(btn => btn.remove());
-
-            // Добавляем фильтры по хэштегам
-            allHashtags.forEach(hashtag => {
-                const filterBtn = document.createElement('div');
-                filterBtn.className = 'filter-btn';
-                filterBtn.setAttribute('data-filter', hashtag);
-
-                // Эмодзи для популярных категорий
-                const emoji = getEmojiForHashtag(hashtag);
-                filterBtn.innerHTML = `${emoji} ${hashtag}`;
-
-                filterBtn.addEventListener('click', () => filterWorks(hashtag));
-                filtersContainer.appendChild(filterBtn);
-            });
-        }
-
-        function getEmojiForHashtag(hashtag) {
-            const emojiMap = {
-                'кошки': '🐱',
-                'собаки': '🐕',
-                'премиум': '⭐',
-                'комплекс': '🏰',
-                'домик': '🏠',
-                'лесенка': '🪜',
-                'настенный': '📐',
-                'модульный': '🧩',
-                'уют': '🤗',
-                'безопасность': '🛡️',
-                'активные': '⚡',
-                'пожилые': '👴'
-            };
-            return emojiMap[hashtag] || '🏷️';
-        }
-
-        function renderGallery(worksToShow) {
-            const gallery = document.getElementById('gallery');
-            const empty = document.getElementById('empty');
-
-            if (!worksToShow.length) {
-                gallery.style.display = 'none';
-                empty.style.display = 'block';
-                return;
-            }
-
-            empty.style.display = 'none';
-            gallery.style.display = 'grid';
-            gallery.innerHTML = '';
-
-            worksToShow.forEach(work => {
-                const card = createWorkCard(work);
-                gallery.appendChild(card);
-            });
-        }
-
-        function createWorkCard(work) {
-            const card = document.createElement('div');
-            card.className = 'work-card';
-            card.onclick = () => openViewModal(work);
-
-            card.innerHTML = `
-                ${isAdmin ? `<button class="delete-btn" onclick="deleteWork(event, ${work.id})" style="display: flex;">×</button>` : ''}
-                <img src="${work.image}" alt="${work.title}" class="work-image" loading="lazy">
-                <div class="work-info">
-                    <h3 class="work-title">${work.title}</h3>
-                    <p class="work-description">${work.description}</p>
-                    <div class="work-meta">
-                        <span>📏 ${work.dimensions || 'Не указано'}</span>
-                        <span>🔨 ${work.materials?.split(',')[0] || 'Не указано'}</span>
-                    </div>
-                    <div class="work-tags">
-                        ${work.hashtags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-                    </div>
-                    <div class="work-stats">
-                        <div class="price">${work.price || 'По запросу'}</div>
-                        <div class="views">👀 ${work.views || 0}</div>
-                    </div>
-                </div>
-            `;
-
-            return card;
-        }
-
-        function filterWorks(filter) {
-            currentFilter = filter;
-
-            // Обновляем активный фильтр
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
-
-            // Фильтруем работы
-            if (filter === 'all') {
-                currentWorks = works;
-            } else {
-                currentWorks = works.filter(work =>
-                    work.hashtags.some(tag => tag.replace('#', '') === filter)
-                );
-            }
-
-            renderGallery(currentWorks);
-
-            // Haptic feedback
-            if (tg?.HapticFeedback) {
-                tg.HapticFeedback.impactOccurred('light');
-            }
-        }
-
-        function openViewModal(work) {
-            const modal = document.getElementById('viewModal');
-            const modalImage = document.getElementById('modalImage');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalDescription = document.getElementById('modalDescription');
-            const modalTags = document.getElementById('modalTags');
-            const modalSpecs = document.getElementById('modalSpecs');
-
-            modalImage.src = work.image;
-            modalImage.alt = work.title;
-            modalTitle.textContent = work.title;
-            modalDescription.textContent = work.description;
-            modalTags.innerHTML = work.hashtags.map(tag => `<span class="tag">${tag}</span>`).join('');
-            modalSpecs.innerHTML = `
-                <p style="margin: 10px 0;"><strong>📏 Размеры:</strong> ${work.dimensions || 'Не указано'}</p>
-                <p style="margin: 10px 0;"><strong>🔨 Материалы:</strong> ${work.materials || 'Не указано'}</p>
-                <p style="margin: 10px 0;"><strong>💰 Цена:</strong> ${work.price || 'По запросу'}</p>
-                <p style="margin: 10px 0;"><strong>👀 Просмотров:</strong> ${work.views || 0}</p>
-            `;
-
-            modal.style.display = 'block';
-
-            // Увеличиваем счетчик просмотров
-            work.views = (work.views || 0) + 1;
-            saveWorks();
-
-            // Haptic feedback
-            if (tg?.HapticFeedback) {
-                tg.HapticFeedback.impactOccurred('medium');
-            }
-        }
-
-        function openAddWorkModal() {
-            document.getElementById('addModal').style.display = 'block';
-
-            if (tg?.HapticFeedback) {
-                tg.HapticFeedback.impactOccurred('light');
-            }
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-
-            // Очищаем форму при закрытии модального окна добавления
-            if (modalId === 'addModal') {
-                document.getElementById('addWorkForm').reset();
-            }
-        }
-
-        function handleAddWork(e) {
-            e.preventDefault();
-
-            if (!isAdmin) {
-                alert('У вас нет прав для добавления работ!');
-                return;
-            }
-
-            // Собираем данные формы
-            const formData = {
-                id: Date.now(), // Простой способ генерации ID
-                title: document.getElementById('workTitle').value.trim(),
-                description: document.getElementById('workDescription').value.trim(),
-                image: document.getElementById('imageUrl').value.trim(),
-                hashtags: document.getElementById('workHashtags').value
-                    .split(',')
-                    .map(tag => tag.trim())
-                    .filter(tag => tag)
-                    .map(tag => tag.startsWith('#') ? tag : '#' + tag),
-                dimensions: document.getElementById('workDimensions').value.trim(),
-                materials: document.getElementById('workMaterials').value.trim(),
-                price: document.getElementById('workPrice').value.trim(),
-                views: 0
-            };
-
-            // Валидация
-            if (!formData.title || !formData.description || !formData.image) {
-                alert('Заполните обязательные поля: название, описание и изображение!');
-                return;
-            }
-
-            // Проверяем URL изображения
-            if (!isValidUrl(formData.image)) {
-                alert('Введите корректный URL изображения!');
-                return;
-            }
-
-            // Добавляем работу
-            works.push(formData);
-            saveWorks();
-
-            // Обновляем интерфейс
-            updateHashtags();
-            createFilters();
-
-            // Если текущий фильтр соответствует новой работе, показываем её
-            if (currentFilter === 'all' ||
-                formData.hashtags.some(tag => tag.replace('#', '') === currentFilter)) {
-                filterWorks(currentFilter);
-            }
-
-            // Закрываем модальное окно
-            closeModal('addModal');
-
-            // Показываем уведомление
-            showNotification('✅ Работа успешно добавлена!', 'success');
-
-            // Haptic feedback
-            if (tg?.HapticFeedback) {
-                tg.HapticFeedback.impactOccurred('heavy');
-            }
-        }
-
-        function deleteWork(event, workId) {
-            event.stopPropagation(); // Предотвращаем открытие модального окна
-
-            if (!isAdmin) {
-                alert('У вас нет прав для удаления работ!');
-                return;
-            }
-
-            if (confirm('Вы уверены, что хотите удалить эту работу?')) {
-                // Находим и удаляем работу
-                const workIndex = works.findIndex(work => work.id === workId);
-                if (workIndex > -1) {
-                    const deletedWork = works[workIndex];
-                    works.splice(workIndex, 1);
-                    saveWorks();
-
-                    // Обновляем интерфейс
-                    updateHashtags();
-                    createFilters();
-                    filterWorks(currentFilter);
-
-                    showNotification(`🗑️ Работа "${deletedWork.title}" удалена`, 'success');
-
-                    if (tg?.HapticFeedback) {
-                        tg.HapticFeedback.impactOccurred('heavy');
-                    }
+        function checkAdminStatus() {
+            // Проверяем, является ли пользователь администратором
+            if (window.Telegram && window.Telegram.WebApp) {
+                const user = window.Telegram.WebApp.initDataUnsafe.user;
+                if (user) {
+                    // Здесь должны быть ID администраторов
+                    const adminIds = [123456789, 987654321]; // Замените на реальные ID
+                    isAdmin = adminIds.includes(user.id);
                 }
             }
+            
+            if (isAdmin) {
+                document.getElementById('adminAddBtn').style.display = 'block';
+                document.getElementById('adminStats').style.display = 'block';
+            }
         }
 
-        function orderWork() {
-            if (tg?.sendData) {
-                tg.sendData(JSON.stringify({
-                    action: 'order_work',
-                    message: 'Хочу заказать изделие из галереи'
-                }));
+        function loadWorks() {
+            // Загрузка работ из локального хранилища
+            const savedWorks = localStorage.getItem('galleryWorks');
+            if (savedWorks) {
+                works = JSON.parse(savedWorks);
+            } else {
+                // Примеры работ по умолчанию
+                works = [
+                    {
+                        id: 1,
+                        title: 'Комплекс "Царский дворец"',
+                        image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDMwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRkZCNkMxIi8+Cjx0ZXh0IHg9IjE1MCIgeT0iMTAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNEE5MEUyIiBmb250LXNpemU9IjE2Ij7wn4+wINCa0L7QvNC/0LvQtdC60YE8L3RleHQ+Cjwvc3ZnPgo=',
+                        hashtags: ['кошки', 'напольный', 'мейн-кун', 'премиум']
+                    },
+                    {
+                        id: 2,
+                        title: 'Лесенка "Комфорт"',
+                        image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDMwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRkZCNkMxIi8+Cjx0ZXh0IHg9IjE1MCIgeT0iMTAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNEE5MEUyIiBmb250LXNpemU9IjE2Ij7wn4qCINCb0LXRgdC10L3QutCwPC90ZXh0Pgo8L3N2Zz4K',
+                        hashtags: ['собаки', 'напольный', 'лесенка']
+                    }
+                ];
+                saveWorks();
             }
+        }
 
-            if (tg?.HapticFeedback) {
-                tg.HapticFeedback.impactOccurred('heavy');
+        function loadLikes() {
+            const savedLikes = localStorage.getItem('galleryLikes');
+            if (savedLikes) {
+                likes = JSON.parse(savedLikes);
             }
-
-            closeModal('viewModal');
-            showNotification('📞 Ваш запрос отправлен! Мы свяжемся с вами.', 'success');
         }
 
         function saveWorks() {
-            try {
-                localStorage.setItem('galleryWorks', JSON.stringify(works));
-            } catch (e) {
-                console.error('Ошибка сохранения:', e);
-                showNotification('❌ Ошибка сохранения данных', 'error');
-            }
+            localStorage.setItem('galleryWorks', JSON.stringify(works));
         }
 
-        function isValidUrl(string) {
-            try {
-                const url = new URL(string);
-                return url.protocol === 'http:' || url.protocol === 'https:';
-            } catch (_) {
-                return false;
-            }
+        function saveLikes() {
+            localStorage.setItem('galleryLikes', JSON.stringify(likes));
         }
 
-        function showNotification(message, type = 'info') {
-            // Создаем уведомление
-            const notification = document.createElement('div');
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: ${type === 'success' ? 'var(--primary-blue)' : type === 'error' ? '#ff4757' : 'var(--primary-pink)'};
-                color: white;
-                padding: 15px 20px;
-                border-radius: 10px;
-                box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-                z-index: 2000;
-                font-weight: 500;
-                max-width: 300px;
-                animation: slideIn 0.3s ease;
-                backdrop-filter: blur(10px);
-            `;
-
-            // Добавляем стили анимации
-            const style = document.createElement('style');
-            style.textContent = `
-                @keyframes slideIn {
-                    from { transform: translateX(100%); opacity: 0; }
-                    to { transform: translateX(0); opacity: 1; }
+        function renderGallery() {
+            const gallery = document.getElementById('gallery');
+            const noResults = document.getElementById('noResults');
+            
+            let filteredWorks = works.filter(work => {
+                if (currentFilters.pet.length > 0) {
+                    const hasPet = currentFilters.pet.some(pet => 
+                        work.hashtags.includes(pet)
+                    );
+                    if (!hasPet) return false;
                 }
-                @keyframes slideOut {
-                    from { transform: translateX(0); opacity: 1; }
-                    to { transform: translateX(100%); opacity: 0; }
+                
+                if (currentFilters.type.length > 0) {
+                    const hasType = currentFilters.type.some(type => 
+                        work.hashtags.includes(type)
+                    );
+                    if (!hasType) return false;
                 }
-            `;
-            document.head.appendChild(style);
-
-            notification.textContent = message;
-            document.body.appendChild(notification);
-
-            // Автоматически удаляем через 3 секунды
-            setTimeout(() => {
-                notification.style.animation = 'slideOut 0.3s ease';
-                setTimeout(() => {
-                    if (notification.parentNode) {
-                        notification.parentNode.removeChild(notification);
-                    }
-                }, 300);
-            }, 3000);
-        }
-
-        // Обработчики закрытия модальных окон
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeModal('viewModal');
-                closeModal('addModal');
-            }
-        });
-
-        // Закрытие по клику вне модального окна
-        ['viewModal', 'addModal'].forEach(modalId => {
-            document.getElementById(modalId).onclick = (e) => {
-                if (e.target === document.getElementById(modalId)) {
-                    closeModal(modalId);
+                
+                if (currentFilters.breed.length > 0) {
+                    const hasBreed = currentFilters.breed.some(breed => 
+                        work.hashtags.includes(breed)
+                    );
+                    if (!hasBreed) return false;
                 }
-            };
-        });
-
-        // Настройка темы под Telegram
-        if (tg?.colorScheme === 'dark') {
-            document.documentElement.style.setProperty('--gradient', 'linear-gradient(135deg, #2c3e50 0%, #34495e 100%)');
-            document.documentElement.style.setProperty('--text-dark', '#e0e0e0');
-            document.documentElement.style.setProperty('--text-light', '#b0b0b0');
-        }
-
-        // Дополнительные утилиты для админа
-        if (isAdmin) {
-            // Горячие клавиши для админа
-            document.addEventListener('keydown', (e) => {
-                if (e.ctrlKey || e.metaKey) {
-                    switch(e.key) {
-                        case 'n':
-                            e.preventDefault();
-                            openAddWorkModal();
-                            break;
-                        case 's':
-                            e.preventDefault();
-                            saveWorks();
-                            showNotification('💾 Данные сохранены', 'success');
-                            break;
-                    }
-                }
+                
+                return true;
             });
 
-            // Экспорт/импорт данных для админа
-            window.exportWorks = function() {
-                const dataStr = JSON.stringify(works, null, 2);
-                const dataBlob = new Blob([dataStr], {type: 'application/json'});
-                const url = URL.createObjectURL(dataBlob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = 'gallery-works.json';
-                link.click();
-                showNotification('📤 Данные экспортированы', 'success');
-            };
+            gallery.innerHTML = '';
+            
+            if (filteredWorks.length === 0) {
+                noResults.style.display = 'block';
+                return;
+            }
+            
+            noResults.style.display = 'none';
+            
+            filteredWorks.forEach(work => {
+                const workElement = createWorkElement(work);
+                gallery.appendChild(workElement);
+            });
+        }
 
-            window.importWorks = function(input) {
-                const file = input.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        try {
-                            const importedWorks = JSON.parse(e.target.result);
-                            if (confirm(`Импортировать ${importedWorks.length} работ? Текущие данные будут заменены.`)) {
-                                works = importedWorks;
-                                saveWorks();
-                                updateHashtags();
-                                createFilters();
-                                filterWorks('all');
-                                showNotification('📥 Данные импортированы', 'success');
-                            }
-                        } catch (err) {
-                            showNotification('❌ Ошибка импорта данных', 'error');
-                        }
-                    };
-                    reader.readAsText(file);
+        function createWorkElement(work) {
+            const div = document.createElement('div');
+            div.className = 'work-item';
+            
+            const likesCount = likes[work.id] ? likes[work.id].count : 0;
+            const isLiked = likes[work.id] && likes[work.id].users && 
+                           likes[work.id].users.includes(getCurrentUserId());
+            
+            div.innerHTML = `
+                <img src="${work.image}" alt="${work.title}" class="work-image" onclick="openImageModal('${work.image}')">
+                <div class="work-info">
+                    <div class="work-title">${work.title}</div>
+                    <div class="work-hashtags">
+                        ${work.hashtags.map(tag => `<span class="hashtag">#${tag}</span>`).join('')}
+                    </div>
+                </div>
+                <button class="like-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike(${work.id})">
+                    ❤️
+                    ${likesCount > 0 ? `<span class="like-count">${likesCount}</span>` : ''}
+                </button>
+            `;
+            
+            return div;
+        }
+
+        function getCurrentUserId() {
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe.user) {
+                return window.Telegram.WebApp.initDataUnsafe.user.id;
+            }
+            return 'guest_' + (localStorage.getItem('guestId') || Date.now());
+        }
+
+        function toggleLike(workId) {
+            const userId = getCurrentUserId();
+            
+            if (!likes[workId]) {
+                likes[workId] = { count: 0, users: [], history: [] };
+            }
+            
+            const userIndex = likes[workId].users.indexOf(userId);
+            
+            if (userIndex === -1) {
+                // Добавляем лайк
+                likes[workId].count++;
+                likes[workId].users.push(userId);
+                likes[workId].history.push({
+                    userId: userId,
+                    action: 'like',
+                    timestamp: new Date().toISOString()
+                });
+                
+                // Отправляем уведомление админу
+                notifyAdminNewLike(workId);
+            } else {
+                // Убираем лайк
+                likes[workId].count--;
+                likes[workId].users.splice(userIndex, 1);
+                likes[workId].history.push({
+                    userId: userId,
+                    action: 'unlike',
+                    timestamp: new Date().toISOString()
+                });
+            }
+            
+            saveLikes();
+            renderGallery();
+            
+            if (isAdmin) {
+                updateAdminStats();
+            }
+        }
+
+        function notifyAdminNewLike(workId) {
+            const work = works.find(w => w.id === workId);
+            if (work && window.Telegram && window.Telegram.WebApp) {
+                // Отправляем данные в бот для уведомления админа
+                window.Telegram.WebApp.sendData(JSON.stringify({
+                    action: 'new_like',
+                    workId: workId,
+                    workTitle: work.title,
+                    timestamp: new Date().toISOString()
+                }));
+            }
+        }
+
+        function updateAdminStats() {
+            const today = new Date().toDateString();
+            let todayLikes = 0;
+            
+            Object.values(likes).forEach(like => {
+                if (like.history) {
+                    todayLikes += like.history.filter(h => 
+                        h.action === 'like' && 
+                        new Date(h.timestamp).toDateString() === today
+                    ).length;
+                }
+            });
+            
+            document.getElementById('todayLikes').textContent = `Лайков за сегодня: ${todayLikes}`;
+            document.getElementById('totalWorks').textContent = `Всего работ: ${works.length}`;
+        }
+
+        function openFilters() {
+            document.getElementById('filtersModal').style.display = 'block';
+        }
+
+        function closeFilters() {
+            document.getElementById('filtersModal').style.display = 'none';
+        }
+
+        function applyFilters() {
+            currentFilters = { pet: [], type: [], breed: [] };
+            
+            document.querySelectorAll('input[name="pet"]:checked').forEach(cb => {
+                currentFilters.pet.push(cb.value);
+            });
+            
+            document.querySelectorAll('input[name="type"]:checked').forEach(cb => {
+                currentFilters.type.push(cb.value);
+            });
+            
+            document.querySelectorAll('input[name="breed"]:checked').forEach(cb => {
+                currentFilters.breed.push(cb.value);
+            });
+            
+            renderGallery();
+            closeFilters();
+        }
+
+        function clearFilters() {
+            document.querySelectorAll('#filtersModal input[type="checkbox"]').forEach(cb => {
+                cb.checked = false;
+            });
+            currentFilters = { pet: [], type: [], breed: [] };
+            renderGallery();
+        }
+
+        function openAddModal() {
+            if (!isAdmin) return;
+            document.getElementById('addWorkModal').style.display = 'block';
+        }
+
+        function closeAddModal() {
+            document.getElementById('addWorkModal').style.display = 'none';
+            document.getElementById('workTitle').value = '';
+            document.getElementById('workImage').value = '';
+            document.getElementById('workHashtags').value = '';
+        }
+
+        function addWork() {
+            const title = document.getElementById('workTitle').value;
+            const imageFile = document.getElementById('workImage').files[0];
+            const hashtags = document.getElementById('workHashtags').value
+                .split(',')
+                .map(tag => tag.trim())
+                .filter(tag => tag);
+            
+            if (!title || !imageFile) {
+                alert('Пожалуйста, заполните все поля');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const newWork = {
+                    id: Date.now(),
+                    title: title,
+                    image: e.target.result,
+                    hashtags: hashtags
+                };
+                
+                works.unshift(newWork);
+                saveWorks();
+                renderGallery();
+                closeAddModal();
+                
+                if (isAdmin) {
+                    updateAdminStats();
                 }
             };
+            
+            reader.readAsDataURL(imageFile);
+        }
 
-            console.log('🔧 Админ-режим активен. Доступные команды:');
-            console.log('- Ctrl+N: добавить работу');
-            console.log('- Ctrl+S: сохранить данные');
-            console.log('- exportWorks(): экспорт данных');
-            console.log('- importWorks(input): импорт данных');
+        function openImageModal(imageSrc) {
+            // Простой просмотр изображения
+            window.open(imageSrc, '_blank');
+        }
+
+        // Закрытие модальных окон при клике вне их
+        window.onclick = function(event) {
+            const filtersModal = document.getElementById('filtersModal');
+            const addModal = document.getElementById('addWorkModal');
+            
+            if (event.target === filtersModal) {
+                closeFilters();
+            }
+            
+            if (event.target === addModal) {
+                closeAddModal();
+            }
         }
     </script>
 </body>
