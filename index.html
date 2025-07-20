@@ -22,6 +22,811 @@
         /* Верхняя голубая полоса с логотипом */
         .header {
             background: #4A90E2;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            position: relative;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            padding: 0 20px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .logo-placeholder {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            border: 2px solid white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logo-placeholder:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Кнопка фильтров */
+        .filters-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .filters-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Модальное окно фильтров */
+        .filters-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .filters-content {
+            background: #FFB6C1;
+            margin: 50px auto;
+            padding: 25px;
+            max-width: 450px;
+            border-radius: 20px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .filters-header {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .filters-header h2 {
+            color: #4A90E2;
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .filter-section {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .filter-section h3 {
+            color: #4A90E2;
+            margin-bottom: 15px;
+            font-size: 16px;
+            text-align: center;
+            border-bottom: 2px solid #4A90E2;
+            padding-bottom: 8px;
+        }
+
+        .filter-option {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .filter-option:hover {
+            background: #f0f8ff;
+        }
+
+        .filter-option input {
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+
+        .filter-option label {
+            font-weight: 500;
+            color: #333;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .filters-actions {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .btn-confirm {
+            background: #4A90E2;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin: 8px;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+        }
+
+        .btn-confirm:hover {
+            background: #357ABD;
+            transform: translateY(-2px);
+        }
+
+        .btn-clear {
+            background: #FF6B6B;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin: 8px;
+        }
+
+        .btn-clear:hover {
+            background: #FF5252;
+            transform: translateY(-2px);
+        }
+
+        /* Розовый фон галереи */
+        .gallery-container {
+            background: #FFB6C1;
+            min-height: calc(100vh - 60px);
+            padding: 25px 20px;
+        }
+
+        /* Сетка работ */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Карточка работы */
+        .work-item {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .work-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .work-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        /* Серое поле для названия и хештегов */
+        .work-info {
+            background: #f5f5f5;
+            padding: 20px;
+            border-top: 3px solid #4A90E2;
+        }
+
+        .work-title {
+            font-weight: bold;
+            margin-bottom: 12px;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .work-hashtags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        /* Голубые хештеги */
+        .hashtag {
+            background: #4A90E2;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* Кнопка лайка */
+        .like-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.9);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            flex-direction: column;
+        }
+
+        .like-btn.liked {
+            background: #FFB6C1;
+            color: white;
+        }
+
+        .like-count {
+            font-size: 10px;
+            font-weight: bold;
+            margin-top: 2px;
+        }
+
+        /* Круглая кнопка добавления */
+        .admin-add-btn {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #4A90E2;
+            color: white;
+            border: none;
+            font-size: 30px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(74, 144, 226, 0.4);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 100;
+            font-weight: bold;
+        }
+
+        .admin-add-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 30px rgba(74, 144, 226, 0.6);
+        }
+
+        .admin-add-btn.show {
+            display: flex;
+        }
+
+        /* Админская панель внизу */
+        .admin-panel {
+            background: white;
+            padding: 20px;
+            margin: 30px auto;
+            max-width: 800px;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .admin-panel.show {
+            display: block;
+        }
+
+        .admin-panel h3 {
+            color: #4A90E2;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .admin-works {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .admin-work-item {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 15px;
+            border-left: 4px solid #4A90E2;
+        }
+
+        .admin-work-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .admin-work-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .admin-btn {
+            flex: 1;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .admin-btn.edit {
+            background: #4A90E2;
+            color: white;
+        }
+
+        .admin-btn.delete {
+            background: #FF6B6B;
+            color: white;
+        }
+
+        .admin-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Модальные окна */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 25px;
+            max-width: 500px;
+            border-radius: 20px;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4A90E2;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .form-group input, 
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        .form-group input:focus, 
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #4A90E2;
+            background: white;
+            color: #333;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #4A90E2;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #357ABD;
+        }
+
+        .btn-secondary {
+            background: #ccc;
+            color: #333;
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .close:hover {
+            color: #333;
+        }
+
+        /* Сообщение об отсутствии работ */
+        .no-results {
+            text-align: center;
+            color: white;
+            font-size: 18px;
+            margin-top: 80px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+        }
+
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .header {
+                height: 50px;
+                font-size: 12px;
+                padding: 0 15px;
+            }
+
+            .logo, .logo-placeholder {
+                width: 30px;
+                height: 30px;
+                font-size: 16px;
+            }
+
+            .filters-btn {
+                top: 10px;
+                right: 10px;
+                padding: 5px 8px;
+                font-size: 11px;
+            }
+
+            .gallery {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 0 10px;
+            }
+
+            .gallery-container {
+                padding: 20px 10px;
+            }
+
+            .admin-add-btn {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 25px;
+            }
+
+            .admin-works {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        #logoInput {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Верхняя голубая полоса -->
+    <div class="header">
+        <div class="header-content">
+            <div class="logo-placeholder" id="logoContainer" onclick="uploadLogo()">
+                🐾
+            </div>
+            <div>Галерея работ</div>
+        </div>
+        <button class="filters-btn" onclick="openFilters()">🔍 Фильтры</button>
+        <input type="file" id="logoInput" accept="image/*" onchange="handleLogoUpload(event)">
+    </div>
+
+    <!-- Розовый фон с содержимым -->
+    <div class="gallery-container">
+        <div class="gallery" id="gallery">
+            <!-- Работы будут загружены здесь -->
+        </div>
+
+        <div class="no-results" id="noResults" style="display: none;">
+            <h3>🔍 Работы не найдены</h3>
+            <p>Попробуйте изменить фильтры</p>
+        </div>
+
+        <!-- Админская панель для управления работами -->
+        <div id="adminPanel" class="admin-panel">
+            <h3>🛠️ Панель администратора</h3>
+            <div id="adminWorks" class="admin-works">
+                <!-- Здесь будут отображаться работы для редактирования -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Круглая кнопка добавления -->
+    <button id="adminAddBtn" class="admin-add-btn" onclick="openAddModal()">+</button>
+
+    <!-- Модальное окно фильтров -->
+    <div id="filtersModal" class="filters-modal">
+        <div class="filters-content">
+            <span class="close" onclick="closeFilters()">&times;</span>
+            
+            <div class="filters-header">
+                <h2>🔍 Фильтры работ</h2>
+            </div>
+            
+            <div class="filter-section">
+                <h3>🐾 Для кого</h3>
+                <div class="filter-option">
+                    <input type="checkbox" id="pet-cats" name="pet" value="кошки">
+                    <label for="pet-cats">Для кошек</label>
+                </div>
+                <div class="filter-option">
+                    <input type="checkbox" id="pet-dogs" name="pet" value="собаки">
+                    <label for="pet-dogs">Для собак</label>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <h3>🏠 Тип комплекса</h3>
+                <div class="filter-option">
+                    <input type="checkbox" id="type-wall" name="type" value="настенный">
+                    <label for="type-wall">Настенный</label>
+                </div>
+                <div class="filter-option">
+                    <input type="checkbox" id="type-floor" name="type" value="напольный">
+                    <label for="type-floor">Напольный</label>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <h3>🎯 Породы</h3>
+                <div class="filter-option">
+                    <input type="checkbox" id="breed-mainecoon" name="breed" value="мейн-кун">
+                    <label for="breed-mainecoon">Мейн-кун</label>
+                </div>
+                <div class="filter-option">
+                    <input type="checkbox" id="breed-british" name="breed" value="британская">
+                    <label for="breed-british">Британская</label>
+                </div>
+                <div class="filter-option">
+                    <input type="checkbox" id="breed-persian" name="breed" value="персидская">
+                    <label for="breed-persian">Персидская</label>
+                </div>
+            </div>
+
+            <div class="filters-actions">
+                <button class="btn-confirm" onclick="applyFilters()">✅ Подтвердить</button>
+                <button class="btn-clear" onclick="clearFilters()">🗑️ Сбросить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно добавления/редактирования -->
+    <div id="addWorkModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAddModal()">&times;</span>
+            <h2 id="modalTitle" style="color: #4A90E2; margin-bottom: 20px;">➕ Добавить работу</h2>
+            
+            <div class="form-group">
+                <label>🖼️ Изображение работы:</label>
+                <input type="file" id="workImage" accept="image/*">
+            </div>
+            
+            <div class="form-group">
+                <label>📝 Название работы:</label>
+                <input type="text" id="workTitle" placeholder="Например: Комплекс для мейн-куна">
+            </div>
+            
+            <div class="form-group">
+                <label>🏷️ Хэштеги (через запятую):</label>
+                <textarea id="workHashtags" placeholder="кошки, настенный, мейн-кун" rows="3"></textarea>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn btn-primary" onclick="saveWork()" id="saveWorkBtn">➕ Добавить</button>
+                <button class="btn btn-secondary" onclick="closeAddModal()">❌ Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно просмотра изображения -->
+    <div id="imageModal" class="modal">
+        <div class="modal-content" style="max-width: 90%;">
+            <span class="close" onclick="closeImageModal()">&times;</span>
+            <img id="modalImage" style="width: 100%; border-radius: 10px;">
+        </div>
+    </div>
+
+    <script>
+        // Глобальные переменные
+        let works = [];
+        let likes = {};
+        let currentFilters = { pet: [], type: [], breed: [] };
+        let isAdmin = false;
+        let currentUserId = null;
+        let tg = null;
+        let editingWorkId = null;
+
+        // Инициализация Telegram WebApp
+        if (window.Telegram && window.Telegram.WebApp) {
+            tg = window.Telegram.WebApp;
+            tg.ready();
+            tg.expand();
+
+            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                currentUserId = tg.initDataUnsafe.user.id;
+                // ЗАМЕНИТЕ НА ВАШИ РЕАЛЬНЫЕ ID АДМИНОВ
+                const adminIds = [123456789, 987654321];
+                isAdmin = adminIds.includes(currentUserId);
+            }
+        } else {
+            // Для тестирования - включаем админ режим
+            isAdmin = true;
+        }
+
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            loadLogo();
+            loadWorks();
+            loadLikes();
+            renderGallery();
+            renderAdminPanel();
+            
+            if (isAdmin) {
+                document.getElementById('adminAddBtn').classList.add('show');
+                document.getElementById('adminPanel').classList.add('show');
+            }
+        });
+
+        // Загрузка логотипа
+        function loadLogo() {
+            const savedLogo = localStorage.getItem('galleryLogo');
+            if (savedLogo) {
+                const logoContainer = document.getElementById('logoContainer');
+                logoContainer.innerHTML = `<img src="${savedLogo}" alt="Логотип" class="logo">`;
+            }
+        }
+
+        function uploadLogo() {
+            if (!isAdmin) {
+                alert('Загрузка логотипа доступна только администраторам');
+                return;
+            }
+            document.getElementById('logoInput').click();
+        }
+
+        function handleLogoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (file.size > 2 * 1024 * 1024) {
+                alert('Размер файла не должен превышать 2MB');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const logoContainer = document.getElementById('logoContainer');
+                logoContainer.innerHTML = `<img src="${e.target.result}" alt="Логотип" class="logo">`;
+                localStorage.setItem('galleryLogo', e.target.result);
+                
+                if (tg && tg.showAlert) {
+                    tg.showAlert('Логотип обновлен!');
+                } else {
+                    alert('Логотип обновлен!');
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Загрузка работ
+        function loadWorks() {
+            const savedWorks = localStorage.getItem('galleryWorks');
+            if (savedWorks) {
+                works = JSON.parse(savedWorks);
+            } else {
+                // Примеры работ
+                works = [
+                    {
+                        id: 1,
+                        title: 'Комплекс "Царский" для мейн-куна',
+                        image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZCNkMxIi8+CjxyZWN0IHg9IjUwIiB5PSI1MCIgd2lkdGg9IjMwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiM0QTkwRTIiIG9wYWNpdHk9IjAuMyIgcng9IjE1Ii8+Cjx0ZXh0IHg9IjIwMCIgeT0iMTIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNEE5MEUyIiBmb250LXNpemU9IjI0IiBmb250LXdlaWdodD0iYm9sZCI+8J+PsCDQmtC+0LzQv9C70LXQutGBPC90ZXh0Pgo8dGV4dCB4PSIyMDAiIHk9IjE4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzMzMyIgZm9udC1zaXplPSIxNCI+I9C60L7RiNC60LggI9C80LXQudC9LdC60YPQvSDQvNC/0YDQtdC80LjRg9C8PC90ZXh0Pgo8L3N2Zz4K',
+                        hashtags: ['кошки', 'мейн-кун', 'напольный', 'премиум'],
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: 2,
+                        title: 'Настенная система "Джунгли"',
+                        image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZCNkMxIi8+CjxyZWN0IHg9IjMwIiB5PSIzMCIgd2lkdGg9IjgwIiBoZWlnaHQ9IjI0MCIgZmlsbD0iIzRBOTBFMiIgb3BhY2l0eT0iMC40IiByeD0iOCIvPgo8cmVjdCB4PSIxNjAiIHk9IjUwIiB3aWR0aD0iODAiIGhlaWdodD0iMjAwIiBmaWxsPSIjNEE5MEUyIiBvcGFjaXR5PSIwLjQiIHJ4PSI4Ii8+CjxyZWN0IHg9IjI5MCIgeT0iNzAiIHdpZHRoPSI4MCIgundefinedПонял! Сейчас исправлю все проблемы. Вот исправленный код:
+
+```html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Галерея работ - Когтик</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #FFB6C1;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Верхняя голубая полоса с логотипом */
+        .header {
+            background: #4A90E2;
             height: 70px;
             display: flex;
             align-items: center;
@@ -218,6 +1023,7 @@
             background: #FFB6C1;
             min-height: calc(100vh - 70px);
             padding: 25px 20px;
+            padding-bottom: 150px; /* Место для админских кнопок */
         }
 
         /* Сетка работ */
@@ -242,11 +1048,6 @@
         .work-item:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-        }
-
-        .work-item:hover .work-actions {
-            opacity: 1;
-            transform: translateY(0);
         }
 
         .work-image {
@@ -309,36 +1110,39 @@
             color: white;
         }
 
-        /* Админские действия для работ */
-        .work-actions {
+        .like-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #FF6B6B;
+            color: white;
+            border-radius: 10px;
+            padding: 2px 6px;
+            font-size: 10px;
+            font-weight: bold;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        /* Кнопка заказа */
+        .order-btn {
             position: absolute;
             bottom: 15px;
-            left: 15px;
             right: 15px;
-            background: rgba(128, 128, 128, 0.95);
-            padding: 12px;
-            border-radius: 12px;
-            display: flex;
-            justify-content: space-around;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
-
-        .action-btn {
-            background: none;
-            border: none;
+            background: #4A90E2;
             color: white;
-            font-size: 20px;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 15px;
             cursor: pointer;
-            padding: 6px;
-            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
             transition: all 0.3s ease;
         }
 
-        .action-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
+        .order-btn:hover {
+            background: #357ABD;
+            transform: scale(1.05);
         }
 
         /* Круглая кнопка добавления */
@@ -370,6 +1174,86 @@
 
         .admin-add-btn.show {
             display: flex;
+        }
+
+        /* Админская панель внизу */
+        .admin-panel {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(74, 144, 226, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            display: none;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.3);
+            z-index: 200;
+        }
+
+        .admin-panel.show {
+            display: block;
+        }
+
+        .admin-panel h3 {
+            color: white;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .admin-work-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: white;
+        }
+
+        .admin-work-info {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        .admin-work-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .admin-work-stats {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .admin-work-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .admin-action-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .admin-action-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .admin-action-btn.delete {
+            background: rgba(255, 107, 107, 0.8);
+        }
+
+        .admin-action-btn.delete:hover {
+            background: rgba(255, 107, 107, 1);
         }
 
         /* Модальные окна */
@@ -510,14 +1394,26 @@
 
             .gallery-container {
                 padding: 20px 10px;
+                padding-bottom: 120px;
             }
 
             .admin-add-btn {
-                bottom: 20px;
+                bottom: 90px;
                 right: 20px;
                 width: 50px;
                 height: 50px;
                 font-size: 25px;
+            }
+
+            .admin-work-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .admin-work-actions {
+                margin-top: 10px;
+                width: 100%;
+                justify-content: center;
             }
         }
 
@@ -553,6 +1449,14 @@
 
     <!-- Круглая кнопка добавления -->
     <button id="adminAddBtn" class="admin-add-btn" onclick="openAddModal()">+</button>
+
+    <!-- Админская панель внизу -->
+    <div id="adminPanel" class="admin-panel">
+        <h3>👨‍💼 Управление работами</h3>
+        <div id="adminWorksList">
+            <!-- Список работ для админа -->
+        </div>
+    </div>
 
     <!-- Модальное окно фильтров -->
     <div id="filtersModal" class="filters-modal">
@@ -632,7 +1536,7 @@
             </div>
             
             <div style="text-align: center; margin-top: 20px;">
-                <button class="btn btn-primary" onclick="saveWork()">➕ Добавить</button>
+                <button class="btn btn-primary" id="saveWorkBtn" onclick="saveWork()">➕ Добавить</button>
                 <button class="btn btn-secondary" onclick="closeAddModal()">❌ Отмена</button>
             </div>
         </div>
@@ -676,9 +1580,11 @@
             loadWorks();
             loadLikes();
             renderGallery();
+            renderAdminPanel();
             
             if (isAdmin) {
                 document.getElementById('adminAddBtn').classList.add('show');
+                document.getElementById('adminPanel').classList.add('show');
             }
         });
 
@@ -834,18 +1740,7 @@
             
             const userId = getCurrentUserId();
             const isLiked = likes[work.id] && likes[work.id].includes(userId);
-            
-            const adminActions = isAdmin ? `
-                <div class="work-actions">
-                    <button class="action-btn" onclick="deleteWork(${work.id})" title="Удалить">🗑️</button>
-                    <button class="action-btn" onclick="editWork(${work.id})" title="Редактировать">✏️</button>
-                    <button class="action-btn" onclick="orderWork(${work.id})" title="Заказать">📞</button>
-                </div>
-            ` : `
-                <div class="work-actions" style="opacity: 1; transform: translateY(0);">
-                    <button class="action-btn" onclick="orderWork(${work.id})" title="Заказать">📞</button>
-                </div>
-            `;
+            const likeCount = likes[work.id] ? likes[work.id].length : 0;
             
             div.innerHTML = `
                 <img src="${work.image}" alt="${work.title}" class="work-image" onclick="openImageModal('${work.image}', '${work.title}')">
@@ -857,8 +1752,9 @@
                 </div>
                 <button class="like-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike(${work.id})">
                     ${isLiked ? '💖' : '🤍'}
+                    ${likeCount > 0 ? `<span class="like-count">${likeCount}</span>` : ''}
                 </button>
-                ${adminActions}
+                <button class="order-btn" onclick="orderWork(${work.id})">📞 Заказать</button>
             `;
             
             return div;
@@ -881,6 +1777,7 @@
             
             saveLikes();
             renderGallery();
+            renderAdminPanel(); // Обновляем админ панель
         }
 
         function orderWork(workId) {
@@ -892,6 +1789,7 @@
                     action: 'gallery_order',
                     workId: workId,
                     workTitle: work.title,
+                    userId: getCurrentUserId(),
                     timestamp: new Date().toISOString()
                 };
                 
@@ -908,6 +1806,33 @@
             } else {
                 alert('Для заказа: @kogtick_master или +7 (999) 123-45-67');
             }
+        }
+
+        // Админская панель
+        function renderAdminPanel() {
+            if (!isAdmin) return;
+            
+            const adminWorksList = document.getElementById('adminWorksList');
+            adminWorksList.innerHTML = '';
+            
+            works.forEach(work => {
+                const likeCount = likes[work.id] ? likes[work.id].length : 0;
+                const workItem = document.createElement('div');
+                workItem.className = 'admin-work-item';
+                
+                workItem.innerHTML = `
+                    <div class="admin-work-info">
+                        <div class="admin-work-title">${work.title}</div>
+                        <div class="admin-work-stats">❤️ ${likeCount} лайков</div>
+                    </div>
+                    <div class="admin-work-actions">
+                        <button class="admin-action-btn" onclick="editWork(${work.id})">✏️ Редактировать</button>
+                        <button class="admin-action-btn delete" onclick="deleteWork(${work.id})">🗑️ Удалить</button>
+                    </div>
+                `;
+                
+                adminWorksList.appendChild(workItem);
+            });
         }
 
         // Функции фильтров
@@ -959,6 +1884,7 @@
             document.getElementById('workTitle').value = '';
             document.getElementById('workImage').value = '';
             document.getElementById('workHashtags').value = '';
+            document.getElementById('saveWorkBtn').textContent = '➕ Добавить';
             
             document.getElementById('addWorkModal').style.display = 'block';
         }
@@ -978,6 +1904,7 @@
             document.getElementById('modalTitle').textContent = '✏️ Редактировать работу';
             document.getElementById('workTitle').value = work.title;
             document.getElementById('workHashtags').value = work.hashtags.join(', ');
+            document.getElementById('saveWorkBtn').textContent = '💾 Сохранить';
             
             document.getElementById('addWorkModal').style.display = 'block';
         }
@@ -1013,6 +1940,7 @@
                         if (imageData) {
                             works[workIndex].image = imageData;
                         }
+                        works[workIndex].updatedAt = new Date().toISOString();
                     }
                 } else {
                     const newWork = {
@@ -1027,10 +1955,13 @@
                 
                 saveWorks();
                 renderGallery();
+                renderAdminPanel();
                 closeAddModal();
                 
                 if (tg && tg.showAlert) {
                     tg.showAlert(editingWorkId ? 'Работа обновлена!' : 'Работа добавлена!');
+                } else {
+                    alert(editingWorkId ? 'Работа обновлена!' : 'Работа добавлена!');
                 }
             }
             
@@ -1044,6 +1975,9 @@
                 reader.onload = function(e) {
                     processWork(e.target.result);
                 };
+                reader.onerror = function() {
+                    alert('Ошибка при загрузке изображения');
+                };
                 reader.readAsDataURL(imageFile);
             } else {
                 processWork();
@@ -1056,7 +1990,9 @@
             const work = works.find(w => w.id === workId);
             if (!work) return;
             
-            if (confirm(`Удалить работу "${work.title}"?`)) {
+            const confirmMessage = `Удалить работу "${work.title}"?`;
+            
+            function performDelete() {
                 works = works.filter(w => w.id !== workId);
                 if (likes[workId]) {
                     delete likes[workId];
@@ -1065,10 +2001,21 @@
                 saveWorks();
                 saveLikes();
                 renderGallery();
+                renderAdminPanel();
                 
                 if (tg && tg.showAlert) {
                     tg.showAlert('Работа удалена');
+                } else {
+                    alert('Работа удалена');
                 }
+            }
+            
+            if (tg && tg.showConfirm) {
+                tg.showConfirm(confirmMessage, (confirmed) => {
+                    if (confirmed) performDelete();
+                });
+            } else {
+                if (confirm(confirmMessage)) performDelete();
             }
         }
 
@@ -1104,6 +2051,22 @@
                 closeImageModal();
             }
         });
+
+        // Обработка кнопки "Назад" в Telegram
+        if (tg && tg.BackButton) {
+            tg.BackButton.onClick(function() {
+                // Закрываем открытые модальные окна
+                if (document.getElementById('filtersModal').style.display === 'block') {
+                    closeFilters();
+                } else if (document.getElementById('addWorkModal').style.display === 'block') {
+                    closeAddModal();
+                } else if (document.getElementById('imageModal').style.display === 'block') {
+                    closeImageModal();
+                } else {
+                    tg.close();
+                }
+            });
+        }
     </script>
 </body>
 </html>
