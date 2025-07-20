@@ -14,7 +14,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(to bottom, #4A90E2 0%, #4A90E2 15%, #FFB6C1 15%, #FFB6C1 100%);
+            background: #FFB6C1;
             min-height: 100vh;
             overflow-x: hidden;
         }
@@ -22,13 +22,13 @@
         /* Верхняя голубая полоса с логотипом */
         .header {
             background: #4A90E2;
-            height: 80px;
+            height: 70px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-weight: bold;
-            font-size: 20px;
+            font-size: 16px;
             position: relative;
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
             padding: 0 20px;
@@ -37,50 +37,54 @@
         .header-content {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
         }
 
         .logo {
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            border: 2px solid white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
 
         .logo-placeholder {
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             background: rgba(255,255,255,0.2);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            border: 3px solid white;
+            font-size: 20px;
+            border: 2px solid white;
             cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logo-placeholder:hover {
+            background: rgba(255,255,255,0.3);
         }
 
         /* Кнопка фильтров */
         .filters-btn {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 15px;
+            right: 15px;
             background: rgba(255, 255, 255, 0.2);
             color: white;
             border: none;
-            padding: 10px 15px;
-            border-radius: 20px;
+            padding: 8px 12px;
+            border-radius: 15px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
             transition: all 0.3s ease;
             font-weight: bold;
         }
 
         .filters-btn:hover {
             background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
         }
 
         /* Модальное окно фильтров */
@@ -119,7 +123,7 @@
         .filters-header h2 {
             color: #4A90E2;
             margin-bottom: 10px;
-            font-size: 22px;
+            font-size: 20px;
         }
 
         .filter-section {
@@ -133,7 +137,7 @@
         .filter-section h3 {
             color: #4A90E2;
             margin-bottom: 15px;
-            font-size: 18px;
+            font-size: 16px;
             text-align: center;
             border-bottom: 2px solid #4A90E2;
             padding-bottom: 8px;
@@ -142,28 +146,27 @@
         .filter-option {
             display: flex;
             align-items: center;
-            margin: 12px 0;
+            margin: 10px 0;
             cursor: pointer;
-            padding: 10px;
-            border-radius: 10px;
+            padding: 8px;
+            border-radius: 8px;
             transition: all 0.3s ease;
         }
 
         .filter-option:hover {
             background: #f0f8ff;
-            transform: translateX(5px);
         }
 
         .filter-option input {
-            margin-right: 15px;
-            transform: scale(1.3);
+            margin-right: 12px;
+            transform: scale(1.2);
         }
 
         .filter-option label {
             font-weight: 500;
             color: #333;
             cursor: pointer;
-            font-size: 15px;
+            font-size: 14px;
         }
 
         .filters-actions {
@@ -177,80 +180,52 @@
             background: #4A90E2;
             color: white;
             border: none;
-            padding: 15px 30px;
-            border-radius: 25px;
+            padding: 12px 25px;
+            border-radius: 20px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
             transition: all 0.3s ease;
-            margin: 10px;
+            margin: 8px;
             box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
         }
 
         .btn-confirm:hover {
             background: #357ABD;
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
         }
 
         .btn-clear {
             background: #FF6B6B;
             color: white;
             border: none;
-            padding: 15px 30px;
-            border-radius: 25px;
+            padding: 12px 25px;
+            border-radius: 20px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
             transition: all 0.3s ease;
-            margin: 10px;
-            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+            margin: 8px;
         }
 
         .btn-clear:hover {
             background: #FF5252;
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
         }
 
         /* Розовый фон галереи */
         .gallery-container {
             background: #FFB6C1;
-            min-height: calc(100vh - 80px);
+            min-height: calc(100vh - 70px);
             padding: 25px 20px;
-        }
-
-        /* Статистика для админа */
-        .admin-stats {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 20px;
-            margin-bottom: 25px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            display: none;
-        }
-
-        .admin-stats h3 {
-            color: #4A90E2;
-            margin-bottom: 15px;
-            font-size: 18px;
-            text-align: center;
-        }
-
-        .stats-item {
-            display: inline-block;
-            margin: 8px 15px;
-            font-weight: bold;
-            color: #333;
-            font-size: 14px;
         }
 
         /* Сетка работ */
         .gallery {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 25px;
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
         }
 
@@ -262,11 +237,10 @@
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
             transition: all 0.4s ease;
             position: relative;
-            transform: translateY(0);
         }
 
         .work-item:hover {
-            transform: translateY(-8px);
+            transform: translateY(-5px);
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
         }
 
@@ -277,14 +251,9 @@
 
         .work-image {
             width: 100%;
-            height: 220px;
+            height: 200px;
             object-fit: cover;
             cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-
-        .work-image:hover {
-            transform: scale(1.05);
         }
 
         /* Серое поле для названия и хештегов */
@@ -298,7 +267,7 @@
             font-weight: bold;
             margin-bottom: 12px;
             color: #333;
-            font-size: 18px;
+            font-size: 16px;
         }
 
         .work-hashtags {
@@ -311,24 +280,19 @@
         .hashtag {
             background: #4A90E2;
             color: white;
-            padding: 6px 12px;
-            border-radius: 15px;
-            font-size: 12px;
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 11px;
             font-weight: 500;
-            transition: background 0.3s ease;
-        }
-
-        .hashtag:hover {
-            background: #357ABD;
         }
 
         /* Кнопка лайка */
         .like-btn {
             position: absolute;
-            top: 15px;
-            right: 15px;
-            width: 45px;
-            height: 45px;
+            top: 12px;
+            right: 12px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             border: none;
             background: rgba(255, 255, 255, 0.9);
@@ -336,45 +300,24 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
-            transition: all 0.4s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            font-size: 16px;
+            transition: all 0.3s ease;
         }
 
         .like-btn.liked {
             background: #FFB6C1;
             color: white;
-            box-shadow: 0 4px 15px rgba(255, 182, 193, 0.4);
-        }
-
-        /* Счетчик лайков */
-        .like-count {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: #4A90E2;
-            color: white;
-            border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            font-size: 11px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            min-width: 22px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
 
         /* Админские действия для работ */
         .work-actions {
             position: absolute;
-            bottom: 20px;
-            left: 20px;
-            right: 20px;
+            bottom: 15px;
+            left: 15px;
+            right: 15px;
             background: rgba(128, 128, 128, 0.95);
-            padding: 15px;
-            border-radius: 15px;
+            padding: 12px;
+            border-radius: 12px;
             display: flex;
             justify-content: space-around;
             opacity: 0;
@@ -387,38 +330,29 @@
             background: none;
             border: none;
             color: white;
-            font-size: 24px;
+            font-size: 20px;
             cursor: pointer;
-            padding: 8px;
-            border-radius: 8px;
+            padding: 6px;
+            border-radius: 6px;
             transition: all 0.3s ease;
         }
 
         .action-btn:hover {
             background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.1);
         }
 
-        .action-btn.delete:hover {
-            color: #FF6B6B;
-        }
-
-        .action-btn.edit:hover {
-            color: #4A90E2;
-        }
-
-        /* Кнопка добавления для админа (круглая с плюсом) */
+        /* Круглая кнопка добавления */
         .admin-add-btn {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 65px;
-            height: 65px;
+            bottom: 25px;
+            right: 25px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             background: #4A90E2;
             color: white;
             border: none;
-            font-size: 32px;
+            font-size: 30px;
             cursor: pointer;
             box-shadow: 0 8px 25px rgba(74, 144, 226, 0.4);
             display: none;
@@ -432,29 +366,10 @@
         .admin-add-btn:hover {
             transform: scale(1.1);
             box-shadow: 0 10px 30px rgba(74, 144, 226, 0.6);
-            background: #357ABD;
         }
 
         .admin-add-btn.show {
             display: flex;
-        }
-
-        /* Сообщение об отсутствии работ */
-        .no-results {
-            text-align: center;
-            color: white;
-            font-size: 20px;
-            margin-top: 100px;
-            padding: 30px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            margin: 80px 20px;
-            backdrop-filter: blur(10px);
-        }
-
-        .no-results h3 {
-            margin-bottom: 15px;
-            font-size: 24px;
         }
 
         /* Модальные окна */
@@ -467,18 +382,16 @@
             bottom: 0;
             background: rgba(0, 0, 0, 0.7);
             z-index: 2000;
-            animation: fadeIn 0.3s ease;
         }
 
         .modal-content {
             background: white;
             margin: 5% auto;
-            padding: 30px;
-            max-width: 550px;
+            padding: 25px;
+            max-width: 500px;
             border-radius: 20px;
             max-height: 85vh;
             overflow-y: auto;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
             position: relative;
         }
 
@@ -501,22 +414,18 @@
             border: 2px solid #e0e0e0;
             border-radius: 10px;
             font-size: 14px;
-            transition: border-color 0.3s ease;
+            background: #f5f5f5;
+            color: #666;
         }
 
         .form-group input:focus, 
         .form-group textarea:focus {
             outline: none;
             border-color: #4A90E2;
-            box-shadow: 0 0 10px rgba(74, 144, 226, 0.2);
+            background: white;
+            color: #333;
         }
 
-        .form-group textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-
-        /* Кнопки */
         .btn {
             padding: 12px 24px;
             border: none;
@@ -531,13 +440,10 @@
         .btn-primary {
             background: #4A90E2;
             color: white;
-            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
         }
 
         .btn-primary:hover {
             background: #357ABD;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
         }
 
         .btn-secondary {
@@ -545,24 +451,28 @@
             color: #333;
         }
 
-        .btn-secondary:hover {
-            background: #bbb;
-        }
-
-        /* Кнопка закрытия */
         .close {
             position: absolute;
             top: 15px;
             right: 20px;
-            font-size: 28px;
+            font-size: 24px;
             cursor: pointer;
             color: #999;
-            transition: color 0.3s ease;
         }
 
         .close:hover {
             color: #333;
-            transform: scale(1.1);
+        }
+
+        /* Сообщение об отсутствии работ */
+        .no-results {
+            text-align: center;
+            color: white;
+            font-size: 18px;
+            margin-top: 80px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
         }
 
         /* Анимации */
@@ -571,118 +481,59 @@
             to { opacity: 1; }
         }
 
-        @keyframes slideUp {
-            from { 
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to { 
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .work-item {
-            animation: slideUp 0.6s ease forwards;
-        }
-
         /* Адаптивность */
         @media (max-width: 768px) {
             .header {
-                height: 70px;
-                font-size: 16px;
+                height: 60px;
+                font-size: 14px;
                 padding: 0 15px;
             }
 
-            .header-content {
-                gap: 10px;
-            }
-
             .logo, .logo-placeholder {
-                width: 40px;
-                height: 40px;
-                font-size: 20px;
+                width: 35px;
+                height: 35px;
+                font-size: 18px;
             }
 
             .filters-btn {
-                top: 15px;
-                right: 15px;
-                padding: 8px 12px;
+                top: 12px;
+                right: 12px;
+                padding: 6px 10px;
                 font-size: 12px;
-            }
-
-            .gallery-container {
-                padding: 20px 15px;
             }
 
             .gallery {
                 grid-template-columns: 1fr;
                 gap: 20px;
+                padding: 0 10px;
             }
 
-            .filters-content {
-                margin: 20px;
-                padding: 20px;
-                max-height: 90vh;
-            }
-
-            .modal-content {
-                margin: 10px;
-                padding: 20px;
-                max-height: 90vh;
+            .gallery-container {
+                padding: 20px 10px;
             }
 
             .admin-add-btn {
                 bottom: 20px;
                 right: 20px;
-                width: 55px;
-                height: 55px;
-                font-size: 28px;
-            }
-
-            .work-title {
-                font-size: 16px;
-            }
-
-            .work-actions {
-                padding: 10px;
-                bottom: 15px;
-                left: 15px;
-                right: 15px;
-            }
-
-            .action-btn {
-                font-size: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 25px;
             }
         }
 
-        /* Скрытие элементов для загрузки логотипа */
         #logoInput {
             display: none;
-        }
-
-        /* Прелоадер */
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 50px;
-            color: white;
-            font-size: 18px;
-        }
-
-        .loading.show {
-            display: block;
         }
     </style>
 </head>
 <body>
-    <!-- Верхняя голубая полоса с логотипом -->
+    <!-- Верхняя голубая полоса -->
     <div class="header">
         <div class="header-content">
             <div class="logo-placeholder" id="logoContainer" onclick="uploadLogo()">
                 🐾
             </div>
-            <div>Галерея работ «Когтик»</div>
+            <div>Галерея работ</div>
         </div>
         <button class="filters-btn" onclick="openFilters()">🔍 Фильтры</button>
         <input type="file" id="logoInput" accept="image/*" onchange="handleLogoUpload(event)">
@@ -690,44 +541,26 @@
 
     <!-- Розовый фон с содержимым -->
     <div class="gallery-container">
-        <!-- Статистика для админа -->
-        <div id="adminStats" class="admin-stats">
-            <h3>📊 Админ-статистика</h3>
-            <div class="stats-item">❤️ Лайков сегодня: <span id="todayLikes">0</span></div>
-            <div class="stats-item">👁️ Просмотров: <span id="totalViews">0</span></div>
-            <div class="stats-item">🖼 Работ: <span id="totalWorks">0</span></div>
-            <div class="stats-item">📅 Обновлено: <span id="lastUpdate"></span></div>
-        </div>
-
-        <!-- Прелоадер -->
-        <div class="loading" id="loading">
-            <div>🔄 Загрузка галереи...</div>
-        </div>
-
-        <!-- Сетка работ -->
         <div class="gallery" id="gallery">
-            <!-- Работы загружаются динамически -->
+            <!-- Работы будут загружены здесь -->
         </div>
 
-        <!-- Сообщение об отсутствии работ -->
         <div class="no-results" id="noResults" style="display: none;">
             <h3>🔍 Работы не найдены</h3>
             <p>Попробуйте изменить фильтры</p>
-            <p>или сбросить все настройки 😊</p>
         </div>
     </div>
 
-    <!-- Кнопка добавления (только для админа) - ИСПРАВЛЕНА -->
+    <!-- Круглая кнопка добавления -->
     <button id="adminAddBtn" class="admin-add-btn" onclick="openAddModal()">+</button>
 
-    <!-- Модальное окно фильтров - ИСПРАВЛЕНО -->
+    <!-- Модальное окно фильтров -->
     <div id="filtersModal" class="filters-modal">
         <div class="filters-content">
             <span class="close" onclick="closeFilters()">&times;</span>
             
             <div class="filters-header">
                 <h2>🔍 Фильтры работ</h2>
-                <p>Выберите параметры для поиска</p>
             </div>
             
             <div class="filter-section">
@@ -755,46 +588,18 @@
             </div>
 
             <div class="filter-section">
-                <h3>🎯 Породы кошек</h3>
+                <h3>🎯 Породы</h3>
                 <div class="filter-option">
                     <input type="checkbox" id="breed-mainecoon" name="breed" value="мейн-кун">
                     <label for="breed-mainecoon">Мейн-кун</label>
                 </div>
                 <div class="filter-option">
                     <input type="checkbox" id="breed-british" name="breed" value="британская">
-                    <label for="breed-british">Британская короткошерстная</label>
-                </div>
-                <div class="filter-option">
-                    <input type="checkbox" id="breed-scottish" name="breed" value="шотландская">
-                    <label for="breed-scottish">Шотландская вислоухая</label>
+                    <label for="breed-british">Британская</label>
                 </div>
                 <div class="filter-option">
                     <input type="checkbox" id="breed-persian" name="breed" value="персидская">
                     <label for="breed-persian">Персидская</label>
-                </div>
-                <div class="filter-option">
-                    <input type="checkbox" id="breed-siamese" name="breed" value="сиамская">
-                    <label for="breed-siamese">Сиамская</label>
-                </div>
-                <div class="filter-option">
-                    <input type="checkbox" id="breed-russian" name="breed" value="русская-голубая">
-                    <label for="breed-russian">Русская голубая</label>
-                </div>
-                <div class="filter-option">
-                    <input type="checkbox" id="breed-sphynx" name="breed" value="сфинкс">
-                    <label for="breed-sphynx">Сфинкс</label>
-                </div>
-                <div class="filter-option">
-                    <input type="checkbox" id="breed-bengal" name="breed" value="бенгальская">
-                    <label for="breed-bengal">Бенгальская</label>
-                </div>
-                <div class="filter-option">
-                    <input type="checkbox" id="breed-abyssinian" name="breed" value="абиссинская">
-                    <label for="breed-abyssinian">Абиссинская</label>
-                </div>
-                <div class="filter-option">
-                    <input type="checkbox" id="breed-ragdoll" name="breed" value="рэгдолл">
-                    <label for="breed-ragdoll">Рэгдолл</label>
                 </div>
             </div>
 
@@ -805,11 +610,16 @@
         </div>
     </div>
 
-    <!-- Модальное окно добавления/редактирования работы -->
+    <!-- Модальное окно добавления/редактирования -->
     <div id="addWorkModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeAddModal()">&times;</span>
-            <h2 id="modalTitle" style="color: #4A90E2; margin-bottom: 25px;">➕ Добавить работу</h2>
+            <h2 id="modalTitle" style="color: #4A90E2; margin-bottom: 20px;">➕ Добавить работу</h2>
+            
+            <div class="form-group">
+                <label>🖼️ Изображение работы:</label>
+                <input type="file" id="workImage" accept="image/*">
+            </div>
             
             <div class="form-group">
                 <label>📝 Название работы:</label>
@@ -817,23 +627,12 @@
             </div>
             
             <div class="form-group">
-                <label>🖼️ Изображение работы:</label>
-                <input type="file" id="workImage" accept="image/*">
-                <div id="currentImage" style="margin-top: 10px; display: none;">
-                    <img id="currentImagePreview" style="max-width: 200px; border-radius: 10px;">
-                </div>
-            </div>
-            
-            <div class="form-group">
                 <label>🏷️ Хэштеги (через запятую):</label>
-                <textarea id="workHashtags" placeholder="кошки, настенный, мейн-кун, премиум" rows="3"></textarea>
-                <small style="color: #666; font-size: 12px;">
-                    Примеры: кошки, собаки, настенный, напольный, мейн-кун, британская, премиум
-                </small>
+                <textarea id="workHashtags" placeholder="кошки, настенный, мейн-кун" rows="3"></textarea>
             </div>
             
-            <div style="text-align: center; margin-top: 25px;">
-                <button class="btn btn-primary" id="saveWorkBtn" onclick="saveWork()">➕ Добавить работу</button>
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn btn-primary" onclick="saveWork()">➕ Добавить</button>
                 <button class="btn btn-secondary" onclick="closeAddModal()">❌ Отмена</button>
             </div>
         </div>
@@ -841,9 +640,9 @@
 
     <!-- Модальное окно просмотра изображения -->
     <div id="imageModal" class="modal">
-        <div class="modal-content" style="max-width: 90%; max-height: 90%;">
+        <div class="modal-content" style="max-width: 90%;">
             <span class="close" onclick="closeImageModal()">&times;</span>
-            <img id="modalImage" style="width: 100%; height: auto; border-radius: 10px;">
+            <img id="modalImage" style="width: 100%; border-radius: 10px;">
         </div>
     </div>
 
@@ -865,114 +664,25 @@
 
             if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
                 currentUserId = tg.initDataUnsafe.user.id;
+                // ЗАМЕНИТЕ НА ВАШИ РЕАЛЬНЫЕ ID АДМИНОВ
                 const adminIds = [123456789, 987654321];
                 isAdmin = adminIds.includes(currentUserId);
             }
         }
 
-        // Инициализация при загрузке страницы
+        // Инициализация при загрузке
         document.addEventListener('DOMContentLoaded', function() {
-            showLoading(true);
             loadLogo();
-            checkAdminStatus();
             loadWorks();
             loadLikes();
             renderGallery();
-            updateAdminStats();
-            showLoading(false);
-        });
-        // Функция загрузки логотипа
-        function loadLogo() {
-            const savedLogo = localStorage.getItem('galleryLogo');
-            if (savedLogo) {
-                const logoContainer = document.getElementById('logoContainer');
-                logoContainer.innerHTML = `<img src="${savedLogo}" alt="Логотип" class="logo">`;
-            }
-        }
-
-        function uploadLogo() {
+            
             if (isAdmin) {
-                document.getElementById('logoInput').click();
-            }
-        }
-
-        function handleLogoUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            // Проверяем размер файла (максимум 5MB)
-            if (file.size > 5 * 1024 * 1024) {
-                alert('Размер файла не должен превышать 5MB');
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const logoData = e.target.result;
-                localStorage.setItem('galleryLogo', logoData);
-                
-                const logoContainer = document.getElementById('logoContainer');
-                logoContainer.innerHTML = `<img src="${logoData}" alt="Логотип" class="logo">`;
-                
-                if (tg && tg.showAlert) {
-                    tg.showAlert('Логотип успешно обновлен!');
-                } else {
-                    alert('Логотип успешно обновлен!');
-                }
-            };
-            
-            reader.onerror = function() {
-                alert('Ошибка при загрузке логотипа');
-            };
-            
-            reader.readAsDataURL(file);
-        }
-
-        // Функция показа загрузки
-        function showLoading(show) {
-            const loading = document.getElementById('loading');
-            const gallery = document.getElementById('gallery');
-            
-            if (show) {
-                loading.classList.add('show');
-                gallery.style.display = 'none';
-            } else {
-                loading.classList.remove('show');
-                gallery.style.display = 'grid';
-            }
-        }
-
-        // Проверка статуса администратора
-        function checkAdminStatus() {
-            const adminIds = [123456789, 987654321]; // Замените на реальные ID админов
-            
-            if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                currentUserId = tg.initDataUnsafe.user.id;
-                isAdmin = adminIds.includes(currentUserId);
-            }
-            
-            // Показываем админские элементы
-            if (isAdmin) {
-                document.getElementById('adminStats').style.display = 'block';
                 document.getElementById('adminAddBtn').classList.add('show');
             }
-        }
+        });
 
-        // Загрузка работ из localStorage
-        function loadWorks() {
-            const savedWorks = localStorage.getItem('galleryWorks');
-            if (savedWorks) {
-                works = JSON.parse(savedWorks);
-            } else {
-                // Примеры работ по умолчанию
-                works = [
-                    {
-                        id: 1,
-                        title: 'Комплекс "Царский дворец" для мейн-куна',
-                        image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZCNkMxIi8+CjxyZWN0IHg9IjUundefinedПродолжаю после `// Функция загрузки логотипа`:
-
-```javascript
-        // Функция загрузки логотипа
+        // Загрузка логотипа
         function loadLogo() {
             const savedLogo = localStorage.getItem('galleryLogo');
             if (savedLogo) {
@@ -983,11 +693,7 @@
 
         function uploadLogo() {
             if (!isAdmin) {
-                if (tg && tg.showAlert) {
-                    tg.showAlert('Загрузка логотипа доступна только администраторам');
-                } else {
-                    alert('Загрузка логотипа доступна только администраторам');
-                }
+                alert('Загрузка логотипа доступна только администраторам');
                 return;
             }
             document.getElementById('logoInput').click();
@@ -997,7 +703,6 @@
             const file = event.target.files[0];
             if (!file) return;
 
-            // Проверяем размер файла (максимум 2MB)
             if (file.size > 2 * 1024 * 1024) {
                 alert('Размер файла не должен превышать 2MB');
                 return;
@@ -1010,70 +715,41 @@
                 localStorage.setItem('galleryLogo', e.target.result);
                 
                 if (tg && tg.showAlert) {
-                    tg.showAlert('Логотип успешно обновлен!');
+                    tg.showAlert('Логотип обновлен!');
                 } else {
-                    alert('Логотип успешно обновлен!');
+                    alert('Логотип обновлен!');
                 }
             };
             reader.readAsDataURL(file);
         }
 
-        function showLoading(show) {
-            const loading = document.getElementById('loading');
-            if (show) {
-                loading.classList.add('show');
-            } else {
-                loading.classList.remove('show');
-            }
-        }
-
-        function checkAdminStatus() {
-            if (isAdmin) {
-                document.getElementById('adminStats').style.display = 'block';
-                document.getElementById('adminAddBtn').classList.add('show');
-            }
-        }
-
+        // Загрузка работ
         function loadWorks() {
             const savedWorks = localStorage.getItem('galleryWorks');
             if (savedWorks) {
                 works = JSON.parse(savedWorks);
             } else {
-                // Примеры работ по умолчанию
+                // Примеры работ
                 works = [
                     {
                         id: 1,
-                        title: 'Комплекс "Царский дворец" для мейн-куна',
-                        image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZCNkMxIi8+CjxyZWN0IHg9IjUwIiB5PSI1MCIgd2lkdGg9IjMwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiM0QTkwRTIiIG9wYWNpdHk9IjAuMyIgcng9IjEwIi8+Cjx0ZXh0IHg9IjIwMCIgeT0iMTAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNEE5MEUyIiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iYm9sZCI+8J+PsCDQmtC+0LzQv9C70LXQutGBPC90ZXh0Pgo8dGV4dCB4PSIyMDAiIHk9IjE2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzMzMyIgZm9udC1zaXplPSIxMiI+I9C60L7RiNC60LggI9C90LDQv9C+0LvRjNC90YvQuSAj0LzQtdC50L0t0LrRg9C9PC90ZXh0Pgo8L3N2Zz4K',
-                        hashtags: ['кошки', 'напольный', 'мейн-кун', 'премиум'],
+                        title: 'Комплекс "Царский" для мейн-куна',
+                        image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZCNkMxIi8+CjxyZWN0IHg9IjUwIiB5PSI1MCIgd2lkdGg9IjMwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiM0QTkwRTIiIG9wYWNpdHk9IjAuMyIgcng9IjE1Ii8+Cjx0ZXh0IHg9IjIwMCIgeT0iMTIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNEE5MEUyIiBmb250LXNpemU9IjI0IiBmb250LXdlaWdodD0iYm9sZCI+8J+PsCDQmtC+0LzQv9C70LXQutGBPC90ZXh0Pgo8dGV4dCB4PSIyMDAiIHk9IjE4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzMzMyIgZm9udC1zaXplPSIxNCI+I9C60L7RiNC60LggI9C80LXQudC9LdC60YPQvSDQvNC/0YDQtdC80LjRg9C8PC90ZXh0Pgo8L3N2Zz4K',
+                        hashtags: ['кошки', 'мейн-кун', 'напольный', 'премиум'],
                         createdAt: new Date().toISOString()
                     },
                     {
                         id: 2,
                         title: 'Настенная система "Джунгли"',
-                        image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZCNkMxIi8+CjxyZWN0IHg9IjMwIiB5PSIzMCIgd2lkdGg9IjgwIiBoZWlnaHQ9IjI0MCIgZmlsbD0iIzRBOTBFMiIgb3BhY2l0eT0iMC4zIiByeD0iNSIvPgo8cmVjdCB4PSIxNjAiIHk9IjUwIiB3aWR0aD0iODAiIGhlaWdodD0iMjAwIiBmaWxsPSIjNEE5MEUyIiBvcGFjaXR5PSIwLjMiIHJ4PSI1Ii8+CjxyZWN0IHg9IjI5MCIgeT0iNzAiIHdpZHRoPSI4MCIgaGVpZ2h0PSIxNjAiIGZpbGw9IiM0QTkwRTIiIG9wYWNpdHk9IjAuMyIgcng9IjUiLz4KPHR2eHQgeD0iMjAwIiB5PSIxMDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM0QTkwRTIiIGZvbnQtc2l6ZT0iMTgiIGZvbnQtd2VpZ2h0PSJib2xkIj7wn48yINCd0LDRgdGC0LXQvdC90LDRjzwvdGV4dD4KPHR5eHQgeD0iMjAwIiB5PSIxNDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiMzMzMiIGZvbnQtc2l6ZT0iMTIiPiPQutC+0YjQutC4ICPQvdCw0YHRgtC10L3QvdGL0LkgI9C/0YDQtdC80LjRg9C8PC90ZXh0Pgo8L3N2Zz4K',
+                        image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZCNkMxIi8+CjxyZWN0IHg9IjMwIiB5PSIzMCIgd2lkdGg9IjgwIiBoZWlnaHQ9IjI0MCIgZmlsbD0iIzRBOTBFMiIgb3BhY2l0eT0iMC40IiByeD0iOCIvPgo8cmVjdCB4PSIxNjAiIHk9IjUwIiB3aWR0aD0iODAiIGhlaWdodD0iMjAwIiBmaWxsPSIjNEE5MEUyIiBvcGFjaXR5PSIwLjQiIHJ4PSI4Ii8+CjxyZWN0IHg9IjI5MCIgeT0iNzAiIHdpZHRoPSI4MCIgaGVpZ2h0PSIxNjAiIGZpbGw9IiM0QTkwRTIiIG9wYWNpdHk9IjAuNCIgcng9IjgiLz4KPHR5eHQgeD0iMjAwIiB5PSIzNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzRBOTBFMiIgZm9udC1zaXplPSIyNCIgZm9udC13ZWlnaHQ9ImJvbGQiPvCfjzIg0J3QsNGB0YLQtdC90L3QsNGPPC90ZXh0Pgo8dGV4dCB4PSIyMDAiIHk9IjI3NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzMzMyIgZm9udC1zaXplPSIxNCI+I9C60L7RiNC60LggI9C90LDRgdGC0LXQvdC90YvQuSDQsdGA0LjRgtCw0L3RgdC60LDRjzwvdGV4dD4KPC9zdmc+',
                         hashtags: ['кошки', 'настенный', 'британская'],
                         createdAt: new Date().toISOString()
                     },
                     {
                         id: 3,
-                        title: 'Домик "Уютный" для персидской кошки',
-                        image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZCNkMxIi8+CjxyZWN0IHg9IjEwMCIgeT0iMTAwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjEyMCIgZmlsbD0iIzRBOTBFMiIgb3BhY2l0eT0iMC4zIiByeD0iMTUiLz4KPHN2ZSB4PSIxNDAiIHk9IjE0MCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiByeD0iMjAiIGZpbGw9IiMzMzMiIG9wYWNpdHk9IjAuNSIvPgo8dGV4dCB4PSIyMDAiIHk9IjgwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNEE5MEUyIiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iYm9sZCI+8J+PoCDQlNC+0LzQuNC6PC90ZXh0Pgo8dGV4dCB4PSIyMDAiIHk9IjI1MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzMzMyIgZm9udC1zaXplPSIxMiI+I9C60L7RiNC60LggI9C/0LXRgNGB0LjQtNGB0LrQsNGPICPRg9GO0YLQvdGL0Lk8L3RleHQ+Cjwvc3ZnPgo=',
-                        hashtags: ['кошки', 'напольный', 'персидская', 'уютный'],
-                        createdAt: new Date().toISOString()
-                    },
-                    {
-                        id: 4,
-                        title: 'Лесенка "Комфорт" для йорка',
-                        image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZCNkMxIi8+CjxyZWN0IHg9IjUwIiB5PSIyMDAiIHdpZHRoPSIxMDAiIGhlaWdodD0iNDAiIGZpbGw9IiM0QTkwRTIiIG9wYWNpdHk9IjAuNCIgcng9IjUiLz4KPHJlY3QgeD0iMTAwIiB5PSIxNjAiIHdpZHRoPSIxMDAiIGhlaWdodD0iNDAiIGZpbGw9IiM0QTkwRTIiIG9wYWNpdHk9IjAuNCIgcng9IjUiLz4KPHJlY3QgeD0iMTUwIiB5PSIxMjAiIHdpZHRoPSIxMDAiIGhlaWdodD0iNDAiIGZpbGw9IiM0QTkwRTIiIG9wYWNpdHk9IjAuNCIgcng9IjUiLz4KPHJlY3QgeD0iMjAwIiB5PSI4MCIgd2lkdGg9IjEwMCIgaGVpZ2h0PSI0MCIgZmlsbD0iIzRBOTBFMiIgb3BhY2l0eT0iMC40IiByeD0iNSIvPgo8dGV4dCB4PSIyMDAiIHk9IjUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNEE5MEUyIiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iYm9sZCI+8J+aqiDQm9C10YHQtdC90LrQsDwvdGV4dD4KPHR5eHQgeD0iMjAwIiB5PSIyNzAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiMzMzMiIGZvbnQtc2l6ZT0iMTIiPiPRgdC+0LHQsNC60LggI9C90LDQv9C+0LvRjNC90YvQuSDQvdCw0L/QvtC70YzQvdGL0LkgI9C60L7QvNGE0L7RgNGCPC90ZXh0Pgo8L3N2Zz4K',
-                        hashtags: ['собаки', 'напольный', 'комфорт'],
-                        createdAt: new Date().toISOString()
-                    },
-                    {
-                        id: 5,
-                        title: 'Пандус складной для пожилых собак',
-                        image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZCNkMxIi8+CjxwYXRoIGQ9Ik01MCAyNDBMMzUwIDgwIiBzdHJva2U9IiM0QTkwRTIiIHN0cm9rZS13aWR0aD0iNDAiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC40Ii8+CjxjaXJjbGUgY3g9IjUwIiBjeT0iMjQwIiByPSIxNSIgZmlsbD0iIzMzMyIgb3BhY2l0eT0iMC42Ii8+CjxjaXJjbGUgY3g9IjM1MCIgY3k9IjgwIiByPSIxNSIgZmlsbD0iIzMzMyIgb3BhY2l0eT0iMC42Ii8+Cjx0ZXh0IHg9IjIwMCIgeT0iNDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM0QTkwRTIiIGZvbnQtc2l6ZT0iMTgiIGZvbnQtd2VpZ2h0PSJib2xkIj7wn5SkINCf0LDQvdC00YPRgzwvdGV4dD4KPHR5eHQgeD0iMjAwIiB5PSIyODAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiMzMzMiIGZvbnQtc2l6ZT0iMTIiPiPRgdC+0LHQsNC60LggI9C90LDQv9C+0LvRjNC90YvQuSDRgdC60LvQsNC00L3QvtC5PC90ZXh0Pgo8L3N2Zz4K',
-                        hashtags: ['собаки', 'напольный', 'складной'],
+                        title: 'Домик "Уютный"',
+                        image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZCNkMxIi8+CjxyZWN0IHg9IjEwMCIgeT0iMTAwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjEyMCIgZmlsbD0iIzRBOTBFMiIgb3BhY2l0eT0iMC4zNSIgcng9IjIwIi8+CjxjaXJjbGUgY3g9IjE0MCIgY3k9IjE0MCIgcj0iMjAiIGZpbGw9IiMzMzMiIG9wYWNpdHk9IjAuNSIvPgo8dGV4dCB4PSIyMDAiIHk9IjgwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNEE5MEUyIiBmb250LXNpemU9IjI0IiBmb250LXdlaWdodD0iYm9sZCI+8J+PoCDQlNC+0LzQuNC6PC90ZXh0Pgo8dGV4dCB4PSIyMDAiIHk9IjI1MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzMzMyIgZm9udC1zaXplPSIxNCI+I9C60L7RiNC60LggI9C/0LXRgNGB0LjQtNGB0LrQsNGPICPRg9GO0YLQvdGL0Lk8L3RleHQ+Cjwvc3ZnPgo=',
+                        hashtags: ['кошки', 'персидская', 'уютный'],
                         createdAt: new Date().toISOString()
                     }
                 ];
@@ -1097,11 +773,8 @@
         }
 
         function getCurrentUserId() {
-            if (currentUserId) {
-                return currentUserId;
-            }
+            if (currentUserId) return currentUserId;
             
-            // Генерируем гостевой ID
             let guestId = localStorage.getItem('guestUserId');
             if (!guestId) {
                 guestId = 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
@@ -1110,14 +783,12 @@
             return guestId;
         }
 
-        // ИСПРАВЛЕННАЯ функция renderGallery
+        // Рендеринг галереи
         function renderGallery() {
             const gallery = document.getElementById('gallery');
             const noResults = document.getElementById('noResults');
             
-            // Фильтруем работы
             let filteredWorks = works.filter(work => {
-                // Проверяем фильтр по типу питомца
                 if (currentFilters.pet.length > 0) {
                     const hasPet = currentFilters.pet.some(pet => 
                         work.hashtags.some(tag => tag.toLowerCase().includes(pet.toLowerCase()))
@@ -1125,7 +796,6 @@
                     if (!hasPet) return false;
                 }
                 
-                // Проверяем фильтр по типу комплекса
                 if (currentFilters.type.length > 0) {
                     const hasType = currentFilters.type.some(type => 
                         work.hashtags.some(tag => tag.toLowerCase().includes(type.toLowerCase()))
@@ -1133,7 +803,6 @@
                     if (!hasType) return false;
                 }
                 
-                // Проверяем фильтр по породе
                 if (currentFilters.breed.length > 0) {
                     const hasBreed = currentFilters.breed.some(breed => 
                         work.hashtags.some(tag => tag.toLowerCase().includes(breed.toLowerCase()))
@@ -1147,48 +816,34 @@
             gallery.innerHTML = '';
             
             if (filteredWorks.length === 0) {
-                gallery.style.display = 'none';
                 noResults.style.display = 'block';
                 return;
             }
             
-            gallery.style.display = 'grid';
             noResults.style.display = 'none';
             
-            filteredWorks.forEach((work, index) => {
-                const workElement = createWorkElement(work, index);
+            filteredWorks.forEach(work => {
+                const workElement = createWorkElement(work);
                 gallery.appendChild(workElement);
             });
         }
 
-        function createWorkElement(work, index) {
+        function createWorkElement(work) {
             const div = document.createElement('div');
             div.className = 'work-item';
-            div.style.animationDelay = `${index * 0.1}s`;
             
             const userId = getCurrentUserId();
-            const likesCount = likes[work.id] ? likes[work.id].count || 0 : 0;
-            const isLiked = likes[work.id] && likes[work.id].users && 
-                           likes[work.id].users.includes(userId);
+            const isLiked = likes[work.id] && likes[work.id].includes(userId);
             
-            // Админские действия (только для админа)
             const adminActions = isAdmin ? `
                 <div class="work-actions">
-                    <button class="action-btn delete" onclick="deleteWork(${work.id})" title="Удалить">
-                        🗑️
-                    </button>
-                    <button class="action-btn edit" onclick="editWork(${work.id})" title="Редактировать">
-                        ✏️
-                    </button>
-                    <button class="action-btn order" onclick="orderFromGallery(${work.id})" title="Заказать">
-                        📞
-                    </button>
+                    <button class="action-btn" onclick="deleteWork(${work.id})" title="Удалить">🗑️</button>
+                    <button class="action-btn" onclick="editWork(${work.id})" title="Редактировать">✏️</button>
+                    <button class="action-btn" onclick="orderWork(${work.id})" title="Заказать">📞</button>
                 </div>
             ` : `
                 <div class="work-actions" style="opacity: 1; transform: translateY(0);">
-                    <button class="action-btn order" onclick="orderFromGallery(${work.id})" title="Заказать эту работу">
-                        📞
-                    </button>
+                    <button class="action-btn" onclick="orderWork(${work.id})" title="Заказать">📞</button>
                 </div>
             `;
             
@@ -1202,7 +857,6 @@
                 </div>
                 <button class="like-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike(${work.id})">
                     ${isLiked ? '💖' : '🤍'}
-                    ${likesCount > 0 ? `<span class="like-count">${likesCount}</span>` : ''}
                 </button>
                 ${adminActions}
             `;
@@ -1212,60 +866,24 @@
 
         function toggleLike(workId) {
             const userId = getCurrentUserId();
-            const work = works.find(w => w.id === workId);
-            
-            if (!work) return;
             
             if (!likes[workId]) {
-                likes[workId] = { count: 0, users: [], history: [] };
+                likes[workId] = [];
             }
             
-            const userIndex = likes[workId].users.indexOf(userId);
+            const userIndex = likes[workId].indexOf(userId);
             
             if (userIndex === -1) {
-                // Добавляем лайк
-                likes[workId].count++;
-                likes[workId].users.push(userId);
-                likes[workId].history.push({
-                    userId: userId,
-                    action: 'like',
-                    timestamp: new Date().toISOString()
-                });
-                
-                // Отправляем уведомление в бот
-                if (tg && tg.sendData) {
-                    const notificationData = {
-                        action: 'new_like',
-                        workId: workId,
-                        workTitle: work.title,
-                        timestamp: new Date().toISOString(),
-                        userId: userId
-                    };
-                    
-                    try {
-                        tg.sendData(JSON.stringify(notificationData));
-                    } catch (error) {
-                        console.log('Не удалось отправить уведомление в бот:', error);
-                    }
-                }
-                
+                likes[workId].push(userId);
             } else {
-                // Убираем лайк
-                likes[workId].count = Math.max(0, likes[workId].count - 1);
-                likes[workId].users.splice(userIndex, 1);
-                likes[workId].history.push({
-                    userId: userId,
-                    action: 'unlike',
-                    timestamp: new Date().toISOString()
-                });
+                likes[workId].splice(userIndex, 1);
             }
             
             saveLikes();
             renderGallery();
-            updateAdminStats();
         }
 
-        function orderFromGallery(workId) {
+        function orderWork(workId) {
             const work = works.find(w => w.id === workId);
             if (!work) return;
             
@@ -1280,38 +898,30 @@
                 try {
                     tg.sendData(JSON.stringify(orderData));
                     if (tg.showAlert) {
-                        tg.showAlert('Заказ отправлен! Мастер свяжется с вами в ближайшее время 😊');
+                        tg.showAlert('Заказ отправлен! Мастер свяжется с вами 😊');
                     }
                 } catch (error) {
-                    console.log('Не удалось отправить заказ:', error);
                     if (tg && tg.showAlert) {
-                        tg.showAlert('Не удалось отправить заказ. Свяжитесь с нами напрямую: @kogtick_master');
+                        tg.showAlert('Свяжитесь с нами: @kogtick_master');
                     }
                 }
             } else {
-                alert('Для заказа свяжитесь с нами: @kogtick_master или +7 (999) 123-45-67');
+                alert('Для заказа: @kogtick_master или +7 (999) 123-45-67');
             }
         }
 
-        // ИСПРАВЛЕННЫЕ функции фильтров
+        // Функции фильтров
         function openFilters() {
             document.getElementById('filtersModal').style.display = 'block';
-            if (tg && tg.BackButton) {
-                tg.BackButton.show();
-            }
         }
 
         function closeFilters() {
             document.getElementById('filtersModal').style.display = 'none';
-            if (tg && tg.BackButton) {
-                tg.BackButton.hide();
-            }
         }
 
         function applyFilters() {
             currentFilters = { pet: [], type: [], breed: [] };
             
-            // Собираем выбранные фильтры
             document.querySelectorAll('input[name="pet"]:checked').forEach(cb => {
                 currentFilters.pet.push(cb.value);
             });
@@ -1326,64 +936,38 @@
             
             renderGallery();
             closeFilters();
-            
-            // Показываем уведомление о количестве найденных работ
-            const filteredCount = document.querySelectorAll('.work-item').length;
-            if (tg && tg.showAlert && filteredCount > 0) {
-                tg.showAlert(`Найдено работ: ${filteredCount}`);
-            }
         }
 
         function clearFilters() {
-            // Очищаем все чекбоксы
             document.querySelectorAll('#filtersModal input[type="checkbox"]').forEach(cb => {
                 cb.checked = false;
             });
             
             currentFilters = { pet: [], type: [], breed: [] };
             renderGallery();
-            
-            if (tg && tg.showAlert) {
-                tg.showAlert('Фильтры сброшены. Показаны все работы');
-            }
         }
 
-        // Функции для админ-панели
+        // Функции админки
         function openAddModal() {
             if (!isAdmin) {
-                if (tg && tg.showAlert) {
-                    tg.showAlert('Доступно только администраторам');
-                } else {
-                    alert('Доступно только администраторам');
-                }
+                alert('Доступно только администраторам');
                 return;
             }
             
             editingWorkId = null;
             document.getElementById('modalTitle').textContent = '➕ Добавить работу';
-            document.getElementById('saveWorkBtn').textContent = '➕ Добавить работу';
             document.getElementById('workTitle').value = '';
             document.getElementById('workImage').value = '';
             document.getElementById('workHashtags').value = '';
-            document.getElementById('currentImage').style.display = 'none';
             
             document.getElementById('addWorkModal').style.display = 'block';
-            
-            if (tg && tg.BackButton) {
-                tg.BackButton.show();
-            }
         }
 
         function closeAddModal() {
             document.getElementById('addWorkModal').style.display = 'none';
             editingWorkId = null;
-            
-            if (tg && tg.BackButton) {
-                tg.BackButton.hide();
-            }
         }
 
-        // НОВАЯ функция редактирования работы
         function editWork(workId) {
             if (!isAdmin) return;
             
@@ -1392,507 +976,134 @@
             
             editingWorkId = workId;
             document.getElementById('modalTitle').textContent = '✏️ Редактировать работу';
-            document.getElementById('saveWorkBtn').textContent = '✅ Сохранить изменения';
             document.getElementById('workTitle').value = work.title;
             document.getElementById('workHashtags').value = work.hashtags.join(', ');
             
-        // Показываем текущее изображение
-        const currentImageDiv = document.getElementById('currentImage');
-        const currentImagePreview = document.getElementById('currentImagePreview');
-        currentImagePreview.src = work.image;
-        currentImageDiv.style.display = 'block';
-        
-        document.getElementById('addWorkModal').style.display = 'block';
-        
-        if (tg && tg.BackButton) {
-            tg.BackButton.show();
+            document.getElementById('addWorkModal').style.display = 'block';
         }
-    }
 
-    function saveWork() {
-        const title = document.getElementById('workTitle').value.trim();
-        const imageFile = document.getElementById('workImage').files[0];
-        const hashtagsStr = document.getElementById('workHashtags').value.trim();
-        
-        // Валидация
-        if (!title) {
-            alert('Введите название работы');
-            return;
-        }
-        
-        if (!editingWorkId && !imageFile) {
-            alert('Выберите изображение для работы');
-            return;
-        }
-        
-        if (!hashtagsStr) {
-            alert('Введите хэштеги');
-            return;
-        }
-        
-        // Обрабатываем хэштеги
-        const hashtags = hashtagsStr.split(',').map(tag => tag.trim()).filter(tag => tag);
-        
-        function processWork(imageData = null) {
-            if (editingWorkId) {
-                // Редактируем существующую работу
-                const workIndex = works.findIndex(w => w.id === editingWorkId);
-                if (workIndex !== -1) {
-                    works[workIndex].title = title;
-                    works[workIndex].hashtags = hashtags;
-                    if (imageData) {
-                        works[workIndex].image = imageData;
-                    }
-                    works[workIndex].updatedAt = new Date().toISOString();
-                }
-                
-                if (tg && tg.showAlert) {
-                    tg.showAlert('Работа успешно обновлена!');
-                }
-            } else {
-                // Добавляем новую работу
-                const newWork = {
-                    id: Date.now(),
-                    title: title,
-                    image: imageData,
-                    hashtags: hashtags,
-                    createdAt: new Date().toISOString()
-                };
-                
-                works.unshift(newWork);
-                
-                if (tg && tg.showAlert) {
-                    tg.showAlert('Работа успешно добавлена!');
-                }
-            }
+        function saveWork() {
+            const title = document.getElementById('workTitle').value.trim();
+            const imageFile = document.getElementById('workImage').files[0];
+            const hashtagsStr = document.getElementById('workHashtags').value.trim();
             
-            saveWorks();
-            renderGallery();
-            updateAdminStats();
-            closeAddModal();
-        }
-        
-        // Обрабатываем изображение
-        if (imageFile) {
-            // Проверяем размер файла (максимум 3MB)
-            if (imageFile.size > 3 * 1024 * 1024) {
-                alert('Размер изображения не должен превышать 3MB');
+            if (!title) {
+                alert('Введите название работы');
                 return;
             }
             
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                processWork(e.target.result);
-            };
-            reader.onerror = function() {
-                alert('Ошибка при загрузке изображения');
-            };
-            reader.readAsDataURL(imageFile);
-        } else {
-            processWork();
-        }
-    }
-
-    function deleteWork(workId) {
-        if (!isAdmin) return;
-        
-        const work = works.find(w => w.id === workId);
-        if (!work) return;
-        
-        const confirmMessage = `Вы уверены, что хотите удалить работу "${work.title}"?`;
-        
-        function performDelete() {
-            // Удаляем работу из массива
-            works = works.filter(w => w.id !== workId);
-            
-            // Удаляем связанные лайки
-            if (likes[workId]) {
-                delete likes[workId];
+            if (!editingWorkId && !imageFile) {
+                alert('Выберите изображение');
+                return;
             }
             
-            saveWorks();
-            saveLikes();
-            renderGallery();
-            updateAdminStats();
-            
-            if (tg && tg.showAlert) {
-                tg.showAlert('Работа успешно удалена');
-            } else {
-                alert('Работа успешно удалена');
+            if (!hashtagsStr) {
+                alert('Введите хэштеги');
+                return;
             }
-        }
-        
-        if (tg && tg.showConfirm) {
-            tg.showConfirm(confirmMessage, (confirmed) => {
-                if (confirmed) performDelete();
-            });
-        } else {
-            if (confirm(confirmMessage)) performDelete();
-        }
-    }
-
-    function updateAdminStats() {
-        if (!isAdmin) return;
-        
-        const today = new Date().toDateString();
-        let todayLikes = 0;
-        let totalLikes = 0;
-        let totalViews = 0;
-        
-        // Подсчитываем лайки
-        Object.values(likes).forEach(workLikes => {
-            totalLikes += workLikes.count || 0;
             
-            if (workLikes.history) {
-                todayLikes += workLikes.history.filter(entry => 
-                    entry.action === 'like' && 
-                    new Date(entry.timestamp).toDateString() === today
-                ).length;
-            }
-        });
-        
-        // Получаем количество просмотров
-        const stats = JSON.parse(localStorage.getItem('galleryStats') || '{"total_views": 0}');
-        totalViews = stats.total_views || 0;
-        
-        // Обновляем элементы статистики
-        document.getElementById('todayLikes').textContent = todayLikes;
-        document.getElementById('totalViews').textContent = totalViews;
-        document.getElementById('totalWorks').textContent = works.length;
-        document.getElementById('lastUpdate').textContent = 
-            new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-    }
-
-    function openImageModal(imageSrc, title) {
-        const modal = document.getElementById('imageModal');
-        const modalImage = document.getElementById('modalImage');
-        
-        modalImage.src = imageSrc;
-        modalImage.alt = title;
-        modal.style.display = 'block';
-        
-        if (tg && tg.BackButton) {
-            tg.BackButton.show();
-        }
-    }
-
-    function closeImageModal() {
-        document.getElementById('imageModal').style.display = 'none';
-        
-        if (tg && tg.BackButton) {
-            tg.BackButton.hide();
-        }
-    }
-
-    // Функция увеличения счетчика просмотров
-    function incrementViewsCount() {
-        let stats = JSON.parse(localStorage.getItem('galleryStats') || '{"total_views": 0, "daily_views": {}}');
-        const today = new Date().toDateString();
-        
-        stats.total_views = (stats.total_views || 0) + 1;
-        stats.daily_views = stats.daily_views || {};
-        stats.daily_views[today] = (stats.daily_views[today] || 0) + 1;
-        
-        localStorage.setItem('galleryStats', JSON.stringify(stats));
-        
-        // Отправляем статистику в бот
-        if (tg && tg.sendData) {
-            setTimeout(() => {
-                try {
-                    const viewData = {
-                        action: 'gallery_view',
-                        timestamp: new Date().toISOString(),
-                        totalViews: stats.total_views
-                    };
-                    tg.sendData(JSON.stringify(viewData));
-                } catch (error) {
-                    console.log('Не удалось отправить статистику просмотров:', error);
-                }
-            }, 2000);
-        }
-        
-        return stats.total_views;
-    }
-
-    // Обработчики событий для мобильных устройств
-    document.addEventListener('touchstart', function(e) {
-        // Предотвращаем зум при двойном тапе
-        if (e.touches.length > 1) {
-            e.preventDefault();
-        }
-    });
-
-    // Обработка кнопки "Назад" в Telegram
-    if (tg && tg.BackButton) {
-        tg.BackButton.onClick(function() {
-            // Закрываем открытые модальные окна
-            if (document.getElementById('filtersModal').style.display === 'block') {
-                closeFilters();
-            } else if (document.getElementById('addWorkModal').style.display === 'block') {
-                closeAddModal();
-            } else if (document.getElementById('imageModal').style.display === 'block') {
-                closeImageModal();
-            } else {
-                tg.close();
-            }
-        });
-    }
-
-    // Закрытие модальных окон при клике вне них
-    window.addEventListener('click', function(event) {
-        const filtersModal = document.getElementById('filtersModal');
-        const addWorkModal = document.getElementById('addWorkModal');
-        const imageModal = document.getElementById('imageModal');
-        
-        if (event.target === filtersModal) {
-            closeFilters();
-        }
-        if (event.target === addWorkModal) {
-            closeAddModal();
-        }
-        if (event.target === imageModal) {
-            closeImageModal();
-        }
-    });
-
-    // Обработка клавиши Escape
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape') {
-            if (document.getElementById('filtersModal').style.display === 'block') {
-                closeFilters();
-            } else if (document.getElementById('addWorkModal').style.display === 'block') {
-                closeAddModal();
-            } else if (document.getElementById('imageModal').style.display === 'block') {
-                closeImageModal();
-            }
-        }
-    });
-
-    // Автоматическое обновление статистики для админа
-    function startAutoUpdate() {
-        if (isAdmin) {
-            setInterval(updateAdminStats, 30000); // каждые 30 секунд
-        }
-    }
-
-    // Функция очистки старых данных
-    function cleanupOldData() {
-        try {
-            const stats = JSON.parse(localStorage.getItem('galleryStats') || '{}');
-            if (!stats.daily_views) return;
+            const hashtags = hashtagsStr.split(',').map(tag => tag.trim()).filter(tag => tag);
             
-            const oneWeekAgo = new Date();
-            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-            
-            // Удаляем данные старше недели
-            Object.keys(stats.daily_views).forEach(dateStr => {
-                if (new Date(dateStr) < oneWeekAgo) {
-                    delete stats.daily_views[dateStr];
-                }
-            });
-            
-            localStorage.setItem('galleryStats', JSON.stringify(stats));
-        } catch (error) {
-            console.log('Ошибка при очистке данных:', error);
-        }
-    }
-
-    // Проверка размера локального хранилища
-    function checkStorageSize() {
-        try {
-            const used = JSON.stringify(localStorage).length;
-            const maxSize = 5 * 1024 * 1024; // 5MB
-            
-            if (used > maxSize * 0.8) { // Предупреждение при 80% заполнения
-                console.warn('Локальное хранилище почти заполнено');
-                
-                if (isAdmin && tg && tg.showAlert) {
-                    tg.showAlert('Рекомендуется создать резервную копию данных галереи');
-                }
-            }
-        } catch (error) {
-            console.log('Не удалось проверить размер хранилища:', error);
-        }
-    }
-
-    // Экспорт данных для админа
-    function exportData() {
-        if (!isAdmin) return;
-        
-        const exportData = {
-            works: works,
-            likes: likes,
-            stats: JSON.parse(localStorage.getItem('galleryStats') || '{}'),
-            logo: localStorage.getItem('galleryLogo'),
-            exportDate: new Date().toISOString(),
-            version: '2.0'
-        };
-        
-        const dataStr = JSON.stringify(exportData, null, 2);
-        const dataBlob = new Blob([dataStr], { type: 'application/json' });
-        
-        // Создаем ссылку для скачивания
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(dataBlob);
-        link.download = `gallery_backup_${new Date().toISOString().split('T')[0]}.json`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(link.href);
-        
-        if (tg && tg.showAlert) {
-            tg.showAlert('Резервная копия создана и загружена');
-        }
-    }
-
-    // Импорт данных для админа
-    function importData(event) {
-        if (!isAdmin) return;
-        
-        const file = event.target.files[0];
-        if (!file) return;
-        
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            try {
-                const importData = JSON.parse(e.target.result);
-                
-                if (confirm('Это действие заменит все текущие данные. Продолжить?')) {
-                    if (importData.works) works = importData.works;
-                    if (importData.likes) likes = importData.likes;
-                    if (importData.stats) {
-                        localStorage.setItem('galleryStats', JSON.stringify(importData.stats));
+            function processWork(imageData = null) {
+                if (editingWorkId) {
+                    const workIndex = works.findIndex(w => w.id === editingWorkId);
+                    if (workIndex !== -1) {
+                        works[workIndex].title = title;
+                        works[workIndex].hashtags = hashtags;
+                        if (imageData) {
+                            works[workIndex].image = imageData;
+                        }
                     }
-                    if (importData.logo) {
-                        localStorage.setItem('galleryLogo', importData.logo);
-                        loadLogo();
-                    }
-                    
-                    saveWorks();
-                    saveLikes();
-                    renderGallery();
-                    updateAdminStats();
-                    
-                    if (tg && tg.showAlert) {
-                        tg.showAlert('Данные успешно импортированы!');
-                    } else {
-                        alert('Данные успешно импортированы!');
-                    }
-                }
-            } catch (error) {
-                if (tg && tg.showAlert) {
-                    tg.showAlert('Ошибка при импорте: ' + error.message);
                 } else {
-                    alert('Ошибка при импорте: ' + error.message);
-                }
-            }
-        };
-        
-        reader.readAsText(file);
-    }
-
-    // Расширенная инициализация
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('🚀 Инициализация галереи "Когтик"...');
-        
-        showLoading(true);
-        
-        // Увеличиваем счетчик просмотров
-        incrementViewsCount();
-        
-        // Загружаем все данные
-        loadLogo();
-        checkAdminStatus();
-        loadWorks();
-        loadLikes();
-        
-        // Рендерим галерею
-        renderGallery();
-        updateAdminStats();
-        
-        // Запускаем автообновления
-        startAutoUpdate();
-        
-        // Очистка старых данных
-        cleanupOldData();
-        
-        // Проверяем размер хранилища
-        setTimeout(checkStorageSize, 3000);
-        
-        showLoading(false);
-        
-        console.log('✅ Галерея успешно загружена!');
-        console.log(`📊 Статистика: ${works.length} работ, админ: ${isAdmin ? 'да' : 'нет'}`);
-        
-        // Отправляем статистику загрузки в бот
-        if (tg && tg.sendData) {
-            setTimeout(() => {
-                try {
-                    const initData = {
-                        action: 'gallery_init',
-                        worksCount: works.length,
-                        isAdmin: isAdmin,
-                        timestamp: new Date().toISOString()
+                    const newWork = {
+                        id: Date.now(),
+                        title: title,
+                        image: imageData,
+                        hashtags: hashtags,
+                        createdAt: new Date().toISOString()
                     };
-                    tg.sendData(JSON.stringify(initData));
-                } catch (error) {
-                    console.log('Не удалось отправить данные инициализации:', error);
+                    works.unshift(newWork);
                 }
-            }, 1000);
-        }
-    });
-
-    // Обработка ошибок
-    window.addEventListener('error', function(event) {
-        console.error('💥 Ошибка в галерее:', event.error);
-        
-        // Показываем сообщение об ошибке пользователю
-        const errorMsg = 'Произошла ошибка при работе с галереей. Попробуйте обновить страницу.';
-        
-        if (tg && tg.showAlert) {
-            tg.showAlert(errorMsg);
-        } else {
-            alert(errorMsg);
-        }
-        
-        // Отправляем отчет об ошибке в бот (только для админа)
-        if (isAdmin && tg && tg.sendData) {
-            try {
-                const errorReport = {
-                    action: 'gallery_error',
-                    error: event.error ? event.error.message : 'Неизвестная ошибка',
-                    stack: event.error ? event.error.stack : '',
-                    timestamp: new Date().toISOString()
+                
+                saveWorks();
+                renderGallery();
+                closeAddModal();
+                
+                if (tg && tg.showAlert) {
+                    tg.showAlert(editingWorkId ? 'Работа обновлена!' : 'Работа добавлена!');
+                }
+            }
+            
+            if (imageFile) {
+                if (imageFile.size > 3 * 1024 * 1024) {
+                    alert('Размер изображения не должен превышать 3MB');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    processWork(e.target.result);
                 };
-                tg.sendData(JSON.stringify(errorReport));
-            } catch (e) {
-                console.log('Не удалось отправить отчет об ошибке:', e);
+                reader.readAsDataURL(imageFile);
+            } else {
+                processWork();
             }
         }
-    });
 
-    // Дополнительные утилиты для отладки (только в режиме разработки)
-    if (window.location.hostname === 'localhost' || window.location.hostname.includes('github.io')) {
-        window.galleryDebug = {
-            works: () => works,
-            likes: () => likes,
-            currentFilters: () => currentFilters,
-            isAdmin: () => isAdmin,
-            exportData: exportData,
-            clearAllData: () => {
-                if (confirm('Удалить ВСЕ данные галереи?')) {
-                    localStorage.removeItem('galleryWorks');
-                    localStorage.removeItem('galleryLikes');
-                    localStorage.removeItem('galleryStats');
-                    localStorage.removeItem('galleryLogo');
-                    location.reload();
+        function deleteWork(workId) {
+            if (!isAdmin) return;
+            
+            const work = works.find(w => w.id === workId);
+            if (!work) return;
+            
+            if (confirm(`Удалить работу "${work.title}"?`)) {
+                works = works.filter(w => w.id !== workId);
+                if (likes[workId]) {
+                    delete likes[workId];
+                }
+                
+                saveWorks();
+                saveLikes();
+                renderGallery();
+                
+                if (tg && tg.showAlert) {
+                    tg.showAlert('Работа удалена');
                 }
             }
-        };
-        
-        console.log('🔧 Debug режим активен. Используйте window.galleryDebug для отладки.');
-    }
+        }
 
-</script>
+        function openImageModal(imageSrc, title) {
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            
+            modalImage.src = imageSrc;
+            modalImage.alt = title;
+            modal.style.display = 'block';
+        }
+
+        function closeImageModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+
+        // Закрытие модальных окон при клике вне них
+        window.addEventListener('click', function(event) {
+            const filtersModal = document.getElementById('filtersModal');
+            const addWorkModal = document.getElementById('addWorkModal');
+            const imageModal = document.getElementById('imageModal');
+            
+            if (event.target === filtersModal) closeFilters();
+            if (event.target === addWorkModal) closeAddModal();
+            if (event.target === imageModal) closeImageModal();
+        });
+
+        // Обработка кнопки Escape
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeFilters();
+                closeAddModal();
+                closeImageModal();
+            }
+        });
+    </script>
 </body>
 </html>
