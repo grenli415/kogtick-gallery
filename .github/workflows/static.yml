@@ -1,0 +1,2019 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Галерея работ - Когтик</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(to bottom, #4A90E2 0%, #4A90E2 15%, #FFB6C1 15%, #FFB6C1 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Верхняя голубая полоса */
+        .header {
+            background: #4A90E2;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+            position: relative;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        /* Кнопка фильтров в верхнем углу */
+        .filters-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+
+        .filters-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Модальное окно фильтров */
+        .filters-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .filters-content {
+            background: white;
+            margin: 50px auto;
+            padding: 25px;
+            max-width: 450px;
+            border-radius: 20px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .filter-section {
+            margin-bottom: 25px;
+        }
+
+        .filter-section h3 {
+            color: #4A90E2;
+            margin-bottom: 12px;
+            font-size: 18px;
+            border-bottom: 2px solid #4A90E2;
+            padding-bottom: 5px;
+        }
+
+        .filter-option {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background 0.2s ease;
+        }
+
+        .filter-option:hover {
+            background: #f0f8ff;
+        }
+
+        .filter-option input {
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+
+        /* Розовый фон галереи */
+        .gallery-container {
+            background: #FFB6C1;
+            min-height: calc(100vh - 80px);
+            padding: 25px 20px;
+        }
+
+        /* Статистика для админа */
+        .admin-stats {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .admin-stats h3 {
+            color: #4A90E2;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .stats-item {
+            display: inline-block;
+            margin: 8px 15px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Сетка работ */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Карточка работы */
+        .work-item {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transition: all 0.4s ease;
+            position: relative;
+            transform: translateY(0);
+        }
+
+        .work-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .work-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .work-image:hover {
+            transform: scale(1.05);
+        }
+
+        /* Серое поле для названия и хештегов */
+        .work-info {
+            background: #f5f5f5;
+            padding: 20px;
+            border-top: 3px solid #4A90E2;
+        }
+
+        .work-title {
+            font-weight: bold;
+            margin-bottom: 12px;
+            color: #333;
+            font-size: 18px;
+        }
+
+        .work-hashtags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        /* Голубые хештеги */
+        .hashtag {
+            background: #4A90E2;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 500;
+            transition: background 0.3s ease;
+        }
+
+        .hashtag:hover {
+            background: #357ABD;
+        }
+
+        /* Кнопка лайка (серая, появляется при наведении) */
+        .like-btn {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: none;
+            background: #ccc;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.4s ease;
+            opacity: 0;
+            transform: scale(0.8);
+        }
+
+        .work-item:hover .like-btn {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Розовая кнопка лайка при активации */
+        .like-btn.liked {
+            background: #FFB6C1;
+            color: white;
+            opacity: 1;
+            transform: scale(1);
+            box-shadow: 0 4px 15px rgba(255, 182, 193, 0.4);
+        }
+
+        /* Счетчик лайков */
+        .like-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #4A90E2;
+            color: white;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            min-width: 22px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        /* Кнопка добавления для админа (правый нижний угол) */
+        .admin-add-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            background: #4A90E2;
+            color: white;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+            display: none;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .admin-add-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(74, 144, 226, 0.6);
+        }
+
+        .admin-add-btn.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Сообщение об отсутствии работ */
+        .no-results {
+            text-align: center;
+            color: white;
+            font-size: 20px;
+            margin-top: 100px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            margin: 80px 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .no-results h3 {
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        /* Модальные окна */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 30px;
+            max-width: 550px;
+            border-radius: 20px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4A90E2;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #4A90E2;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* Кнопки */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #4A90E2;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #357ABD;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #ccc;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #bbb;
+        }
+
+        .btn-clear {
+            background: #FF6B6B;
+            color: white;
+        }
+
+        .btn-clear:hover {
+            background: #FF5252;
+        }
+
+        /* Кнопка закрытия */
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #333;
+        }
+
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .work-item {
+            animation: slideUp 0.6s ease forwards;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .header {
+                height: 70px;
+                font-size: 18px;
+            }
+
+            .filters-btn {
+                top: 15px;
+                right: 15px;
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+
+            .gallery-container {
+                padding: 20px 15px;
+            }
+
+            .gallery {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .filters-content {
+                margin: 20px;
+                padding: 20px;
+                max-height: 90vh;
+            }
+
+            .modal-content {
+                margin: 10px;
+                padding: 20px;
+                max-height: 90vh;
+            }
+
+            .admin-add-btn {
+                bottom: 20px;
+                right: 20px;
+                width: 55px;
+                height: 55px;
+                font-size: 24px;
+            }
+
+            .work-title {
+                font-size: 16px;
+            }
+
+            .no-results {
+                font-size: 18px;
+                margin: 40px 15px;
+                padding: 25px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                font-size: 16px;
+            }
+
+            .work-info {
+                padding: 15px;
+            }
+
+            .hashtag {
+                font-size: 11px;
+                padding: 4px 8px;
+            }
+
+            .like-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+                bottom: 15px;
+                right: 15px;
+            }
+        }
+
+        /* Прелоадер */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 50px;
+            color: white;
+            font-size: 18px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Верхняя голубая полоса -->
+    <div class="header">
+        🐾 Галерея работ «Когтик»
+        <button class="filters-btn" onclick="openFilters()">Фильтры</button>
+    </div>
+
+    <!-- Розовый фон с содержимым -->
+    <div class="gallery-container">
+        <!-- Статистика для админа -->
+        <div id="adminStats" class="admin-stats">
+            <h3>📊 Админ-статистика</h3>
+            <div class="stats-item">❤️ Лайков сегодня: <span id="todayLikes">0</span></div>
+            <div class="stats-item">👁️ Просмотров: <span id="totalViews">0</span></div>
+            <div class="stats-item">🖼 Работ: <span id="totalWorks">0</span></div>
+            <div class="stats-item">📅 Обновлено: <span id="lastUpdate"></span></div>
+        </div>
+
+        <!-- Прелоадер -->
+        <div class="loading" id="loading">
+            <div>🔄 Загрузка галереи...</div>
+        </div>
+
+        <!-- Сетка работ -->
+        <div class="gallery" id="gallery">
+            <!-- Работы загружаются динамически -->
+        </div>
+
+        <!-- Сообщение об отсутствии работ -->
+        <div class="no-results" id="noResults" style="display: none;">
+            <h3>🔍 Работы не найдены</h3>
+            <p>Пожалуйста, поменяйте фильтры</p>
+            <p>У нас нет таких работ пока что 😊</p>
+        </div>
+    </div>
+
+    <!-- Кнопка добавления (только для админа) -->
+    <button id="adminAddBtn" class="admin-add-btn" onclick="openAddModal()">+</button>
+
+    <!-- Модальное окно фильтров -->
+    <div id="filtersModal" class="filters-modal">
+        <div class="filters-content">
+            <span class="close" onclick="closeFilters()">&times;</span>
+            <h2 style="color: #4A90E2; margin-bottom: 25px;">🔍 Фильтры работ</h2>
+
+            <div class="filter-section">
+                <h3>🐾 Для кого</h3>
+                <label class="filter-option">
+                    <input type="checkbox" name="pet" value="кошки"> Для кошек
+                </label>
+                <label class="filter-option">
+                    <input type="checkbox" name="pet" value="собаки"> Для собак
+                </label>
+            </div>
+
+            <div class="filter-section">
+                <h3>🏠 Тип комплекса</h3>
+                <label class="filter-option">
+                    <input type="checkbox" name="type" value="настенный"> Настенный
+                </label>
+                <label class="filter-option">
+                    <input type="checkbox" name="type" value="напольный"> Напольный
+                </label>
+            </div>
+
+            <div class="filter-section">
+                <h3>🎯 Породы кошек</h3>
+                <label class="filter-option">
+                    <input type="checkbox" name="breed" value="мейн-кун"> Мейн-кун
+                </label>
+                <label class="filter-option">
+                    <input type="checkbox" name="breed" value="британская"> Британская короткошерстная
+                </label>
+                <label class="filter-option">
+                    <input type="checkbox" name="breed" value="шотландская"> Шотландская вислоухая
+                </label>
+                <label class="filter-option">
+                    <input type="checkbox" name="breed" value="персидская"> Персидская
+                </label>
+                <label class="filter-option">
+                    <input type="checkbox" name="breed" value="сиамская"> Сиамская
+                </label>
+                <label class="filter-option">
+                    <input type="checkbox" name="breed" value="русская-голубая"> Русская голубая
+                </label>
+                <label class="filter-option">
+                    <input type="checkbox" name="breed" value="сфинкс"> Сфинкс
+                </label>
+                <label class="filter-option">
+                    <input type="checkbox" name="breed" value="бенгальская"> Бенгальская
+                </label>
+                <label class="filter-option">
+                    <input type="checkbox" name="breed" value="абиссинская"> Абиссинская
+                </label>
+                <label class="filter-option">
+                    <input type="checkbox" name="breed" value="рэгдолл"> Рэгдолл
+                </label>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="btn btn-primary" onclick="applyFilters()">✅ Применить</button>
+                <button class="btn btn-clear" onclick="clearFilters()">🗑️ Очистить</button>
+                <button class="btn btn-secondary" onclick="closeFilters()">❌ Закрыть</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно добавления работы (только для админа) -->
+    <div id="addWorkModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAddModal()">&times;</span>
+            <h2 style="color: #4A90E2; margin-bottom: 25px;">➕ Добавить работу</h2>
+
+            <div class="form-group">
+                <label>📝 Название работы:</label>
+                <input type="text" id="workTitle" placeholder="Например: Комплекс для мейн-куна">
+            </div>
+
+            <div class="form-group">
+                <label>🖼️ Изображение работы:</label>
+                <input type="file" id="workImage" accept="image/*">
+            </div>
+
+            <div class="form-group">
+                <label>🏷️ Хэштеги (через запятую):</label>
+                <textarea id="workHashtags" placeholder="кошки, настенный, мейн-кун, премиум" rows="3"></textarea>
+                <small style="color: #666; font-size: 12px;">
+                    Примеры: кошки, собаки, настенный, напольный, мейн-кун, британская, премиум
+                </small>
+            </div>
+
+            <div style="text-align: center; margin-top: 25px;">
+                <button class="btn btn-primary" onclick="addWork()">➕ Добавить работу</button>
+                <button class="btn btn-secondary" onclick="closeAddModal()">❌ Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно просмотра изображения -->
+    <div id="imageModal" class="modal">
+        <div class="modal-content" style="max-width: 90%; max-height: 90%;">
+            <span class="close" onclick="closeImageModal()">&times;</span>
+            <img id="modalImage" style="width: 100%; height: auto; border-radius: 10px;">
+        </div>
+    </div>
+
+    <script>
+        // Глобальные переменные
+        let works = [];
+        let likes = {};
+        let currentFilters = { pet: [], type: [], breed: [] };
+        let isAdmin = false;
+        let currentUserId = null;
+        let tg = null;
+
+        // Инициализация Telegram WebApp
+        if (window.Telegram && window.Telegram.WebApp) {
+            tg = window.Telegram.WebApp;
+            tg.ready();
+            tg.expand();
+
+            // Получаем данные пользователя
+            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                currentUserId = tg.initDataUnsafe.user.id;
+                // Проверяем, является ли пользователь админом
+                const adminIds = [123456789, 987654321]; // Замените на реальные ID
+                isAdmin = adminIds.includes(currentUserId);
+            }
+        }
+
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            showLoading(true);
+            checkAdminStatus();
+            loadWorks();
+            loadLikes();
+            renderGallery();
+            updateAdminStats();
+            showLoading(false);
+        });
+
+        function showLoading(show) {
+            const loading = document.getElementById('loading');
+            if (show) {
+                loading.classList.add('show');
+            } else {
+                loading.classList.remove('show');
+            }
+        }
+
+        function checkAdminStatus() {
+            if (isAdmin) {
+                document.getElementById('adminAddBtn').classList.add('show');
+                document.getElementById('adminStats').style.display = 'block';
+            }
+        }
+
+        function loadWorks() {
+            // Загрузка работ из локального хранилища
+            const savedWorks = localStorage.getItem('galleryWorks');
+            if (savedWorks) {
+                works = JSON.parse(savedWorks);
+            } else {
+                                // Примеры работ по умолчанию
+                works = [
+                    {
+                        id: 1,
+                        title: 'Комплекс "Царский дворец" для мейн-куна',
+                        image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZCNkMxIi8+CjxyZWN0IHg9IjUwIiB5PSI1MCIgd2lkdGg9IjMwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiM0QTkwRTIiIG9wYWNpdHk9IjAuMyIgcng9IjEwIi8+Cjx0ZXh0IHg9IjIwMCIgeT0iMTAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNEE5MEUyIiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iYm9sZCI+8J+PsCDQmtC+0LzQv9C70LXQutGBPC90ZXh0Pgo8dGV4dCB4PSIyMDAiIHk9IjE2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzMzMyIgZm9udC1zaXplPSIxMiI+I9C60L7RiNC60LggI9C90LDQv9C+0LvRjNC90YvQuSAj0LzQtdC50L0t0LrRg9C9PC90ZXh0Pgo8L3N2Zz4K',
+                        hashtags: ['кошки', 'напольный', 'мейн-кун', 'премиум']
+                    },
+                    {
+                        id: 2,
+                        title: 'Настенная система "Джунгли"',
+                        image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZCNkMxIi8+CjxyZWN0IHg9IjMwIiB5PSIzMCIgd2lkdGg9IjgwIiBoZWlnaHQ9IjI0MCIgZmlsbD0iIzRBOTBFMiIgb3BhY2l0eT0iMC4zIiByeD0iNSIvPgo8cmVjdCB4PSIxNjAiIHk9IjUwIiB3aWR0aD0iODAiIGhlaWdodD0iMjAwIiBmaWxsPSIjNEE5MEUyIiBvcGFjaXR5PSIwLjMiIHJ4PSI1Ii8+CjxyZWN0IHg9IjI5MCIgeT0iNzAiIHdpZHRoPSI4MCIgaGVpZ2h0PSIxNjAiIGZpbGw9IiM0QTkwRTIiIG9wYWNpdHk9IjAuMyIgcng9IjUiLz4KPHR2eHQgeD0iMjAwIiB5PSIxMDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM0QTkwRTIiIGZvbnQtc2l6ZT0iMTgiIGZvbnQtd2VpZ2h0PSJib2xkIj7wn48yINCd0LDRgdGC0LXQvdC90LDRjzwvdGV4dD4KPHR5eHQgeD0iMjAwIiB5PSIxNDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiMzMzMiIGZvbnQtc2l6ZT0iMTIiPiPQutC+0YjQutC4ICPQvdCw0YHRgtC10L3QvdGL0LkgI9C/0YDQtdC80LjRg9C8PC90ZXh0Pgo8L3N2Zz4K',
+                        hashtags: ['кошки', 'настенный', 'британская']
+                    },
+                    {
+                        id: 3,
+                        title: 'Домик "Уютный" для персидской кошки',
+                        image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZCNkMxIi8+CjxyZWN0IHg9IjEwMCIgeT0iMTAwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjEyMCIgZmlsbD0iIzRBOTBFMiIgb3BhY2l0eT0iMC4zIiByeD0iMTUiLz4KPHN2ZSB4PSIxNDAiIHk9IjE0MCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiByeD0iMjAiIGZpbGw9IiMzMzMiIG9wYWNpdHk9IjAuNSIvPgo8dGV4dCB4PSIyMDAiIHk9IjgwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNEE5MEUyIiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iYm9sZCI+8J+PoCDQlNC+0LzQuNC6PC90ZXh0Pgo8dGV4dCB4PSIyMDAiIHk9IjI1MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzMzMyIgZm9udC1zaXplPSIxMiI+I9C60L7RiNC60LggI9C/0LXRgNGB0LjQtNGB0LrQsNGPICPRg9GO0YLQvdGL0Lk8L3RleHQ+Cjwvc3ZnPgo=',
+                        hashtags: ['кошки', 'напольный', 'персидская', 'уютный']
+                    },
+                    {
+                        id: 4,
+                        title: 'Лесенка "Комфорт" для йорка',
+                        image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZCNkMxIi8+CjxyZWN0IHg9IjUwIiB5PSIyMDAiIHdpZHRoPSIxMDAiIGhlaWdodD0iNDAiIGZpbGw9IiM0QTkwRTIiIG9wYWNpdHk9IjAuNCIgcng9IjUiLz4KPHJlY3QgeD0iMTAwIiB5PSIxNjAiIHdpZHRoPSIxMDAiIGhlaWdodD0iNDAiIGZpbGw9IiM0QTkwRTIiIG9wYWNpdHk9IjAuNCIgcng9IjUiLz4KPHJlY3QgeD0iMTUwIiB5PSIxMjAiIHdpZHRoPSIxMDAiIGhlaWdodD0iNDAiIGZpbGw9IiM0QTkwRTIiIG9wYWNpdHk9IjAuNCIgcng9IjUiLz4KPHJlY3QgeD0iMjAwIiB5PSI4MCIgd2lkdGg9IjEwMCIgaGVpZ2h0PSI0MCIgZmlsbD0iIzRBOTBFMiIgb3BhY2l0eT0iMC40IiByeD0iNSIvPgo8dGV4dCB4PSIyMDAiIHk9IjUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNEE5MEUyIiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iYm9sZCI+8J+aqiDQm9C10YHQtdC90LrQsDwvdGV4dD4KPHR5eHQgeD0iMjAwIiB5PSIyNzAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiMzMzMiIGZvbnQtc2l6ZT0iMTIiPiPRgdC+0LHQsNC60LggI9C90LDQv9C+0LvRjNC90YvQuSDQvdCw0L/QvtC70YzQvdGL0LkgI9C60L7QvNGE0L7RgNGCPC90ZXh0Pgo8L3N2Zz4K',
+                        hashtags: ['собаки', 'напольный', 'комфорт']
+                    },
+                    {
+                        id: 5,
+                        title: 'Пандус складной для пожилых собак',
+                        image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZCNkMxIi8+CjxwYXRoIGQ9Ik01MCAyNDBMMzUwIDgwIiBzdHJva2U9IiM0QTkwRTIiIHN0cm9rZS13aWR0aD0iNDAiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC40Ii8+CjxjaXJjbGUgY3g9IjUwIiBjeT0iMjQwIiByPSIxNSIgZmlsbD0iIzMzMyIgb3BhY2l0eT0iMC42Ii8+CjxjaXJjbGUgY3g9IjM1MCIgY3k9IjgwIiByPSIxNSIgZmlsbD0iIzMzMyIgb3BhY2l0eT0iMC42Ii8+Cjx0ZXh0IHg9IjIwMCIgeT0iNDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM0QTkwRTIiIGZvbnQtc2l6ZT0iMTgiIGZvbnQtd2VpZ2h0PSJib2xkIj7wn5SkINCf0LDQvdC00YPRgzwvdGV4dD4KPHR5eHQgeD0iMjAwIiB5PSIyODAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiMzMzMiIGZvbnQtc2l6ZT0iMTIiPiPRgdC+0LHQsNC60LggI9C90LDQv9C+0LvRjNC90YvQuSDRgdC60LvQsNC00L3QvtC5PC90ZXh0Pgo8L3N2Zz4K',
+                        hashtags: ['собаки', 'напольный', 'складной']
+                    }
+                ];
+                saveWorks();
+            }
+        }
+
+        function loadLikes() {
+            const savedLikes = localStorage.getItem('galleryLikes');
+            if (savedLikes) {
+                likes = JSON.parse(savedLikes);
+            }
+        }
+
+        function saveWorks() {
+            localStorage.setItem('galleryWorks', JSON.stringify(works));
+        }
+
+        function saveLikes() {
+            localStorage.setItem('galleryLikes', JSON.stringify(likes));
+        }
+
+        function getCurrentUserId() {
+            if (currentUserId) {
+                return currentUserId;
+            }
+
+            // Генерируем гостевой ID
+            let guestId = localStorage.getItem('guestUserId');
+            if (!guestId) {
+                guestId = 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('guestUserId', guestId);
+            }
+            return guestId;
+        }
+
+        function renderGallery() {
+            const gallery = document.getElementById('gallery');
+            const noResults = document.getElementById('noResults');
+
+            // Фильтруем работы
+            let filteredWorks = works.filter(work => {
+                // Проверяем фильтр по типу питомца
+                if (currentFilters.pet.length > 0) {
+                    const hasPet = currentFilters.pet.some(pet =>
+                        work.hashtags.some(tag => tag.toLowerCase().includes(pet.toLowerCase()))
+                    );
+                    if (!hasPet) return false;
+                }
+
+                // Проверяем фильтр по типу комплекса
+                if (currentFilters.type.length > 0) {
+                    const hasType = currentFilters.type.some(type =>
+                        work.hashtags.some(tag => tag.toLowerCase().includes(type.toLowerCase()))
+                    );
+                    if (!hasType) return false;
+                }
+
+                // Проверяем фильтр по породе
+                if (currentFilters.breed.length > 0) {
+                    const hasBreed = currentFilters.breed.some(breed =>
+                        work.hashtags.some(tag => tag.toLowerCase().includes(breed.toLowerCase()))
+                    );
+                    if (!hasBreed) return false;
+                }
+
+                return true;
+            });
+
+            gallery.innerHTML = '';
+
+            if (filteredWorks.length === 0) {
+                gallery.style.display = 'none';
+                noResults.style.display = 'block';
+                return;
+            }
+
+            gallery.style.display = 'grid';
+            noResults.style.display = 'none';
+
+            filteredWorks.forEach((work, index) => {
+                const workElement = createWorkElement(work, index);
+                gallery.appendChild(workElement);
+            });
+        }
+
+        function createWorkElement(work, index) {
+            const div = document.createElement('div');
+            div.className = 'work-item';
+            div.style.animationDelay = `${index * 0.1}s`;
+
+            const userId = getCurrentUserId();
+            const likesCount = likes[work.id] ? likes[work.id].count || 0 : 0;
+            const isLiked = likes[work.id] && likes[work.id].users &&
+                           likes[work.id].users.includes(userId);
+
+            div.innerHTML = `
+                <img src="${work.image}" alt="${work.title}" class="work-image" onclick="openImageModal('${work.image}', '${work.title}')">
+                <div class="work-info">
+                    <div class="work-title">${work.title}</div>
+                    <div class="work-hashtags">
+                        ${work.hashtags.map(tag => `<span class="hashtag">#${tag}</span>`).join('')}
+                    </div>
+                </div>
+                <button class="like-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike(${work.id})">
+                    ${isLiked ? '💖' : '🤍'}
+                    ${likesCount > 0 ? `<span class="like-count">${likesCount}</span>` : ''}
+                </button>
+            `;
+
+            return div;
+        }
+
+        function toggleLike(workId) {
+            const userId = getCurrentUserId();
+            const work = works.find(w => w.id === workId);
+
+            if (!work) return;
+
+            if (!likes[workId]) {
+                likes[workId] = { count: 0, users: [], history: [] };
+            }
+
+            const userIndex = likes[workId].users.indexOf(userId);
+
+            if (userIndex === -1) {
+                // Добавляем лайк
+                likes[workId].count++;
+                likes[workId].users.push(userId);
+                likes[workId].history.push({
+                    userId: userId,
+                    action: 'like',
+                    timestamp: new Date().toISOString()
+                });
+
+                // Отправляем уведомление в бот (если Telegram WebApp доступен)
+                if (tg && tg.sendData) {
+                    const notificationData = {
+                        action: 'new_like',
+                        workId: workId,
+                        workTitle: work.title,
+                        timestamp: new Date().toISOString(),
+                        userId: userId
+                    };
+
+                    try {
+                        tg.sendData(JSON.stringify(notificationData));
+                    } catch (error) {
+                        console.log('Не удалось отправить уведомление в бот:', error);
+                    }
+                }
+
+            } else {
+                // Убираем лайк
+                likes[workId].count = Math.max(0, likes[workId].count - 1);
+                likes[workId].users.splice(userIndex, 1);
+                likes[workId].history.push({
+                    userId: userId,
+                    action: 'unlike',
+                    timestamp: new Date().toISOString()
+                });
+            }
+
+            saveLikes();
+            renderGallery();
+            updateAdminStats();
+        }
+
+        function updateAdminStats() {
+            if (!isAdmin) return;
+
+            const today = new Date().toDateString();
+            let todayLikes = 0;
+            let totalLikes = 0;
+
+            // Подсчитываем лайки
+            Object.values(likes).forEach(workLikes => {
+                totalLikes += workLikes.count || 0;
+
+                if (workLikes.history) {
+                    todayLikes += workLikes.history.filter(entry =>
+                        entry.action === 'like' &&
+                        new Date(entry.timestamp).toDateString() === today
+                    ).length;
+                }
+            });
+
+            // Обновляем отображение статистики
+            document.getElementById('todayLikes').textContent = todayLikes;
+            document.getElementById('totalWorks').textContent = works.length;
+
+            // Обновляем время последнего обновления
+            document.getElementById('lastUpdate').textContent =
+                new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        // Функции для работы с фильтрами
+        function openFilters() {
+            document.getElementById('filtersModal').style.display = 'block';
+        }
+
+        function closeFilters() {
+            document.getElementById('filtersModal').style.display = 'none';
+        }
+
+        function applyFilters() {
+            currentFilters = { pet: [], type: [], breed: [] };
+
+            // Собираем выбранные фильтры
+            document.querySelectorAll('input[name="pet"]:checked').forEach(cb => {
+                currentFilters.pet.push(cb.value);
+            });
+
+            document.querySelectorAll('input[name="type"]:checked').forEach(cb => {
+                currentFilters.type.push(cb.value);
+            });
+
+            document.querySelectorAll('input[name="breed"]:checked').forEach(cb => {
+                currentFilters.breed.push(cb.value);
+            });
+
+            renderGallery();
+            closeFilters();
+        }
+
+        function clearFilters() {
+            // Очищаем все чекбоксы
+            document.querySelectorAll('#filtersModal input[type="checkbox"]').forEach(cb => {
+                cb.checked = false;
+            });
+
+            currentFilters = { pet: [], type: [], breed: [] };
+            renderGallery();
+        }
+
+        // Функции для админ-панели
+        function openAddModal() {
+            if (!isAdmin) {
+                alert('Доступно только администраторам');
+                return;
+            }
+            document.getElementById('addWorkModal').style.display = 'block';
+        }
+
+        function closeAddModal() {
+            document.getElementById('addWorkModal').style.display = 'none';
+            // Очищаем форму
+            document.getElementById('workTitle').value = '';
+            document.getElementById('workImage').value = '';
+            document.getElementById('workHashtags').value = '';
+        }
+
+        function addWork() {
+            const title = document.getElementById('workTitle').value.trim();
+            const imageFile = document.getElementById('workImage').files[0];
+            const hashtagsText = document.getElementById('workHashtags').value.trim();
+
+            if (!title) {
+                alert('Пожалуйста, введите название работы');
+                return;
+            }
+
+            if (!imageFile) {
+                alert('Пожалуйста, выберите изображение');
+                return;
+            }
+
+            if (!hashtagsText) {
+                alert('Пожалуйста, добавьте хештеги');
+                return;
+            }
+
+            // Обрабатываем хештеги
+            const hashtags = hashtagsText
+                .split(',')
+                .map(tag => tag.trim().replace('#', ''))
+                .filter(tag => tag.length > 0);
+
+            if (hashtags.length === 0) {
+                alert('Добавьте хотя бы один хештег');
+                return;
+            }
+
+            // Читаем файл изображения
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const newWork = {
+                    id: Date.now(), // Простой ID на базе времени
+                    title: title,
+                    image: e.target.result,
+                    hashtags: hashtags,
+                    createdAt: new Date().toISOString()
+                };
+
+                // Добавляем в начало массива (новые работы сверху)
+                works.unshift(newWork);
+                saveWorks();
+                renderGallery();
+                updateAdminStats();
+                closeAddModal();
+
+                // Показываем успешное сообщение
+                if (tg && tg.showAlert) {
+                    tg.showAlert('Работа успешно добавлена в галерею!');
+                } else {
+                    alert('Работа успешно добавлена в галерею!');
+                }
+            };
+
+            reader.onerror = function() {
+                alert('Ошибка при чтении файла изображения');
+            };
+
+            reader.readAsDataURL(imageFile);
+        }
+
+        // Функции для просмотра изображений
+        function openImageModal(imageSrc, title) {
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+
+            modalImage.src = imageSrc;
+            modalImage.alt = title || 'Изображение работы';
+            modal.style.display = 'block';
+        }
+
+        function closeImageModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+
+        // Закрытие модальных окон при клике вне содержимого
+        window.onclick = function(event) {
+            const filtersModal = document.getElementById('filtersModal');
+            const addModal = document.getElementById('addWorkModal');
+            const imageModal = document.getElementById('imageModal');
+
+            if (event.target === filtersModal) {
+                closeFilters();
+            }
+
+            if (event.target === addModal) {
+                closeAddModal();
+            }
+
+            if (event.target === imageModal) {
+                closeImageModal();
+            }
+        }
+
+        // Обработка клавиш
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                // Закрываем открытые модальные окна
+                if (document.getElementById('filtersModal').style.display === 'block') {
+                    closeFilters();
+                }
+                if (document.getElementById('addWorkModal').style.display === 'block') {
+                    closeAddModal();
+                }
+                if (document.getElementById('imageModal').style.display === 'block') {
+                    closeImageModal();
+                }
+            }
+        });
+
+        // Telegram WebApp настройки
+        if (tg) {
+            // Устанавливаем цвет заголовка
+            tg.setHeaderColor('#4A90E2');
+
+            // Обрабатываем кнопку "Назад"
+            tg.onEvent('backButtonClicked', function() {
+                // Если открыто модальное окно, закрываем его
+                if (document.getElementById('filtersModal').style.display === 'block') {
+                    closeFilters();
+                    return;
+                }
+                if (document.getElementById('addWorkModal').style.display === 'block') {
+                    closeAddModal();
+                    return;
+                }
+                if (document.getElementById('imageModal').style.display === 'block') {
+                    closeImageModal();
+                    return;
+                }
+
+                // Иначе закрываем приложение
+                tg.close();
+            });
+
+            // Показываем кнопку "Назад" когда открыто модальное окно
+            const originalOpenFilters = openFilters;
+            openFilters = function() {
+                originalOpenFilters();
+                tg.BackButton.show();
+            };
+
+            const originalCloseFilters = closeFilters;
+            closeFilters = function() {
+                originalCloseFilters();
+                tg.BackButton.hide();
+            };
+
+            const originalOpenAddModal = openAddModal;
+            openAddModal = function() {
+                originalOpenAddModal();
+                if (isAdmin) {
+                    tg.BackButton.show();
+                }
+            };
+
+            const originalCloseAddModal = closeAddModal;
+            closeAddModal = function() {
+                originalCloseAddModal();
+                tg.BackButton.hide();
+            };
+        }
+
+        // Функция для отправки заказа из галереи
+        function orderFromGallery(workId) {
+            const work = works.find(w => w.id === workId);
+            if (!work) return;
+
+            if (tg && tg.sendData) {
+                const orderData = {
+                    action: 'gallery_order',
+                    workId: workId,
+                    workTitle: work.title,
+                    timestamp: new Date().toISOString()
+                };
+
+                try {
+                    tg.sendData(JSON.stringify(orderData));
+                    tg.close();
+                } catch (error) {
+                    console.log('Не удалось отправить заказ:', error);
+                    alert('Не удалось отправить заказ. Свяжитесь с нами напрямую: @kogtick_master');
+                }
+            } else {
+                alert('Для заказа свяжитесь с нами: @kogtick_master или +7 (999) 123-45-67');
+            }
+        }
+
+        // Добавляем кнопку заказа к каждой работе (обновляем функцию createWorkElement)
+        function createWorkElementWithOrder(work, index) {
+            const div = document.createElement('div');
+            div.className = 'work-item';
+            div.style.animationDelay = `${index * 0.1}s`;
+
+            const userId = getCurrentUserId();
+            const likesCount = likes[work.id] ? likes[work.id].count || 0 : 0;
+            const isLiked = likes[work.id] && likes[work.id].users &&
+                           likes[work.id].users.includes(userId);
+
+            div.innerHTML = `
+                <img src="${work.image}" alt="${work.title}" class="work-image" onclick="openImageModal('${work.image}', '${work.title}')">
+                <div class="work-info">
+                    <div class="work-title">${work.title}</div>
+                    <div class="work-hashtags">
+                        ${work.hashtags.map(tag => `<span class="hashtag">#${tag}</span>`).join('')}
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <button class="btn btn-primary" onclick="orderFromGallery(${work.id})" style="font-size: 12px; padding: 8px 12px;">
+                            📞 Заказать эту работу
+                        </button>
+                    </div>
+                </div>
+                <button class="like-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike(${work.id})">
+                    ${isLiked ? '💖' : '🤍'}
+                    ${likesCount > 0 ? `<span class="like-count">${likesCount}</span>` : ''}
+                </button>
+            `;
+
+            return div;
+        }
+
+        // Обновляем функцию renderGallery для использования новой функции создания элементов
+        function renderGalleryUpdated() {
+            const gallery = document.getElementById('gallery');
+            const noResults = document.getElementById('noResults');
+
+            // Фильтруем работы
+            let filteredWorks = works.filter(work => {
+                // Проверяем фильтр по типу питомца
+                if (currentFilters.pet.length > 0) {
+                    const hasPet = currentFilters.pet.some(pet =>
+                        work.hashtags.some(tag => tag.toLowerCase().includes(pet.toLowerCase()))
+                    );
+                    if (!hasPet) return false;
+                }
+
+                // Проверяем фильтр по типу комплекса
+                if (currentFilters.type.length > 0) {
+                    const hasType = currentFilters.type.some(type =>
+                        work.hashtags.some(tag => tag.toLowerCase().includes(type.toLowerCase()))
+                    );
+                    if (!hasType) return false;
+                }
+
+                // Проверяем фильтр по породе
+                if (currentFilters.breed.length > 0) {
+                    const hasBreed = currentFilters.breed.some(breed =>
+                        work.hashtags.some(tag => tag.toLowerCase().includes(breed.toLowerCase()))
+                    );
+                    if (!hasBreed) return false;
+                }
+
+                return true;
+            });
+
+            gallery.innerHTML = '';
+
+            if (filteredWorks.length === 0) {
+                gallery.style.display = 'none';
+                noResults.style.display = 'block';
+                return;
+            }
+
+            gallery.style.display = 'grid';
+            noResults.style.display = 'none';
+
+            filteredWorks.forEach((work, index) => {
+                const workElement = createWorkElementWithOrder(work, index);
+                gallery.appendChild(workElement);
+            });
+        }
+
+        // Заменяем старую функцию renderGallery на обновленную
+        renderGallery = renderGalleryUpdated;
+
+        // Функции для работы с локальным хранилищем и экспорт/импорт данных
+        function exportGalleryData() {
+            if (!isAdmin) return;
+
+            const exportData = {
+                works: works,
+                likes: likes,
+                exportDate: new Date().toISOString(),
+                version: '1.0'
+            };
+
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `gallery-backup-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function importGalleryData(event) {
+            if (!isAdmin) return;
+
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importData = JSON.parse(e.target.result);
+
+                    if (importData.works && Array.isArray(importData.works)) {
+                        works = importData.works;
+                        saveWorks();
+                    }
+
+                    if (importData.likes && typeof importData.likes === 'object') {
+                        likes = importData.likes;
+                        saveLikes();
+                    }
+
+                    renderGallery();
+                    updateAdminStats();
+
+                    alert('Данные успешно импортированы!');
+                } catch (error) {
+                    alert('Ошибка при импорте данных: ' + error.message);
+                }
+            };
+
+            reader.readAsText(file);
+        }
+
+        // Функция для получения статистики по работам (для админа)
+        function getWorksStatistics() {
+            if (!isAdmin) return null;
+
+            const stats = {
+                totalWorks: works.length,
+                totalLikes: Object.values(likes).reduce((sum, workLikes) => sum + (workLikes.count || 0), 0),
+                topWorks: [],
+                recentActivity: []
+            };
+
+            // Топ работ по лайкам
+            const worksWithLikes = works.map(work => ({
+                ...work,
+                likesCount: likes[work.id] ? likes[work.id].count || 0 : 0
+            })).sort((a, b) => b.likesCount - a.likesCount);
+
+            stats.topWorks = worksWithLikes.slice(0, 5);
+
+            // Недавняя активность
+            const allActivity = [];
+            Object.keys(likes).forEach(workId => {
+                const workLikes = likes[workId];
+                if (workLikes.history) {
+                    workLikes.history.forEach(activity => {
+                        const work = works.find(w => w.id == workId);
+                        allActivity.push({
+                            ...activity,
+                            workTitle: work ? work.title : 'Неизвестная работа',
+                            workId: workId
+                        });
+                    });
+                }
+            });
+
+            stats.recentActivity = allActivity
+                .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+                .slice(0, 10);
+
+            return stats;
+        }
+
+        // Дополнительные функции для админ-панели
+        function showDetailedStats() {
+            if (!isAdmin) return;
+
+            const stats = getWorksStatistics();
+            if (!stats) return;
+
+            let statsText = `📊 ДЕТАЛЬНАЯ СТАТИСТИКА\n\n`;
+            statsText += `🖼 Всего работ: ${stats.totalWorks}\n`;
+            statsText += `❤️ Всего лайков: ${stats.totalLikes}\n\n`;
+
+            statsText += `🏆 ТОП РАБОТ:\n`;
+            stats.topWorks.slice(0, 3).forEach((work, index) => {
+                statsText += `${index + 1}. "${work.title}" - ${work.likesCount} ❤️\n`;
+            });
+
+            statsText += `\n📅 ПОСЛЕДНЯЯ АКТИВНОСТЬ:\n`;
+            stats.recentActivity.slice(0, 5).forEach(activity => {
+                const date = new Date(activity.timestamp).toLocaleDateString('ru-RU');
+                const time = new Date(activity.timestamp).toLocaleTimeString('ru-RU', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                const action = activity.action === 'like' ? '❤️' : '💔';
+                statsText += `${action} "${activity.workTitle}" - ${date} ${time}\n`;
+            });
+
+            if (tg && tg.showAlert) {
+                tg.showAlert(statsText);
+            } else {
+                alert(statsText);
+            }
+        }
+
+        // Функции для управления работами (удаление для админа)
+        function deleteWork(workId) {
+            if (!isAdmin) return;
+
+            const work = works.find(w => w.id === workId);
+            if (!work) return;
+
+            const confirmMessage = `Вы уверены, что хотите удалить работу "${work.title}"?`;
+
+            if (tg && tg.showConfirm) {
+                tg.showConfirm(confirmMessage, (confirmed) => {
+                    if (confirmed) {
+                        performDeleteWork(workId);
+                    }
+                });
+            } else {
+                if (confirm(confirmMessage)) {
+                    performDeleteWork(workId);
+                }
+            }
+        }
+
+        function performDeleteWork(workId) {
+            // Удаляем работу
+            works = works.filter(w => w.id !== workId);
+
+            // Удаляем связанные лайки
+            if (likes[workId]) {
+                delete likes[workId];
+            }
+
+            saveWorks();
+            saveLikes();
+            renderGallery();
+            updateAdminStats();
+
+            const message = 'Работа успешно удалена';
+            if (tg && tg.showAlert) {
+                tg.showAlert(message);
+            } else {
+                alert(message);
+            }
+        }
+
+        // Обновляем функцию создания элементов для админа (с кнопкой удаления)
+        function createAdminWorkElement(work, index) {
+            const div = document.createElement('div');
+            div.className = 'work-item';
+            div.style.animationDelay = `${index * 0.1}s`;
+
+            const userId = getCurrentUserId();
+            const likesCount = likes[work.id] ? likes[work.id].count || 0 : 0;
+            const isLiked = likes[work.id] && likes[work.id].users &&
+                           likes[work.id].users.includes(userId);
+
+            const adminButtons = isAdmin ? `
+                <div style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="orderFromGallery(${work.id})" style="font-size: 11px; padding: 6px 10px;">
+                        📞 Заказать
+                    </button>
+                    <button class="btn btn-clear" onclick="deleteWork(${work.id})" style="font-size: 11px; padding: 6px 10px;">
+                        undefinedПродолжаю с того места где остановился:
+
+```javascript
+        // Функция для отправки заказа из галереи
+        function orderFromGallery(workId) {
+            const work = works.find(w => w.id === workId);
+            if (!work) return;
+
+            if (tg && tg.sendData) {
+                const orderData = {
+                    action: 'gallery_order',
+                    workId: workId,
+                    workTitle: work.title,
+                    timestamp: new Date().toISOString()
+                };
+
+                try {
+                    tg.sendData(JSON.stringify(orderData));
+                    tg.close();
+                } catch (error) {
+                    console.log('Не удалось отправить заказ:', error);
+                    alert('Не удалось отправить заказ. Свяжитесь с нами напрямую: @kogtick_master');
+                }
+            } else {
+                alert('Для заказа свяжитесь с нами: @kogtick_master или +7 (999) 123-45-67');
+            }
+        }
+
+        // Добавляем кнопку заказа к каждой работе (обновляем функцию createWorkElement)
+        function createWorkElement(work, index) {
+            const div = document.createElement('div');
+            div.className = 'work-item';
+            div.style.animationDelay = `${index * 0.1}s`;
+
+            const userId = getCurrentUserId();
+            const likesCount = likes[work.id] ? likes[work.id].count || 0 : 0;
+            const isLiked = likes[work.id] && likes[work.id].users &&
+                           likes[work.id].users.includes(userId);
+
+            div.innerHTML = `
+                undefinedundefinedПродолжаю с того места где остановился:
+
+```javascript
+        // Функция для отправки заказа из галереи
+        function orderFromGallery(workId) {
+            const work = works.find(w => w.id === workId);
+            if (!work) return;
+
+            if (tg && tg.sendData) {
+                const orderData = {
+                    action: 'gallery_order',
+                    workId: workId,
+                    workTitle: work.title,
+                    timestamp: new Date().toISOString()
+                };
+
+                try {
+                    tg.sendData(JSON.stringify(orderData));
+                    tg.close();
+                } catch (error) {
+                    console.log('Не удалось отправить заказ:', error);
+                    alert('Не удалось отправить заказ. Свяжитесь с нами напрямую: @kogtick_master');
+                }
+            } else {
+                alert('Для заказа свяжитесь с нами: @kogtick_master или +7 (999) 123-45-67');
+            }
+        }
+
+        // Функция для добавления кнопки заказа к работам (для обычных пользователей)
+        function addOrderButtonToWork(workElement, workId) {
+            const orderBtn = document.createElement('button');
+            orderBtn.className = 'order-btn';
+            orderBtn.innerHTML = '📞 Заказать';
+            orderBtn.style.cssText = `
+                position: absolute;
+                bottom: 70px;
+                right: 20px;
+                background: #4A90E2;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 20px;
+                cursor: pointer;
+                font-size: 12px;
+                font-weight: bold;
+                opacity: 0;
+                transform: scale(0.8);
+                transition: all 0.3s ease;
+                z-index: 10;
+            `;
+
+            orderBtn.onclick = () => orderFromGallery(workId);
+
+            workElement.appendChild(orderBtn);
+
+            // Показываем кнопку при наведении на работу
+            workElement.addEventListener('mouseenter', () => {
+                orderBtn.style.opacity = '1';
+                orderBtn.style.transform = 'scale(1)';
+            });
+
+            workElement.addEventListener('mouseleave', () => {
+                orderBtn.style.opacity = '0';
+                orderBtn.style.transform = 'scale(0.8)';
+            });
+        }
+
+        // Обновляем функцию создания элемента работы
+        function createWorkElement(work, index) {
+            const div = document.createElement('div');
+            div.className = 'work-item';
+            div.style.animationDelay = `${index * 0.1}s`;
+
+            const userId = getCurrentUserId();
+            const likesCount = likes[work.id] ? likes[work.id].count || 0 : 0;
+            const isLiked = likes[work.id] && likes[work.id].users &&
+                           likes[work.id].users.includes(userId);
+
+            div.innerHTML = `
+                <img src="${work.image}" alt="${work.title}" class="work-image" onclick="openImageModal('${work.image}', '${work.title}')">
+                <div class="work-info">
+                    <div class="work-title">${work.title}</div>
+                    <div class="work-hashtags">
+                        ${work.hashtags.map(tag => `<span class="hashtag">#${tag}</span>`).join('')}
+                    </div>
+                </div>
+                <button class="like-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike(${work.id})">
+                    ${isLiked ? '💖' : '🤍'}
+                    ${likesCount > 0 ? `<span class="like-count">${likesCount}</span>` : ''}
+                </button>
+            `;
+
+            // Добавляем кнопку заказа для обычных пользователей
+            if (!isAdmin) {
+                addOrderButtonToWork(div, work.id);
+            }
+
+            return div;
+        }
+
+        // Функция для экспорта данных (для админа)
+        function exportData() {
+            if (!isAdmin) return;
+
+            const exportData = {
+                works: works,
+                likes: likes,
+                exportDate: new Date().toISOundefinedundefinedПродолжаю после `// Функция для отправки заказа из галереи`:
+
+```javascript
+        // Функция для отправки заказа из галереи
+        function orderFromGallery(workId) {
+            const work = works.find(w => w.id === workId);
+            if (!work) return;
+
+            if (tg && tg.sendData) {
+                const orderData = {
+                    action: 'gallery_order',
+                    workId: workId,
+                    workTitle: work.title,
+                    timestamp: new Date().toISOString()
+                };
+
+                try {
+                    tg.sendData(JSON.stringify(orderData));
+                    tg.close();
+                } catch (error) {
+                    console.log('Не удалось отправить заказ:', error);
+                    alert('Не удалось отправить заказ. Свяжитесь с нами напрямую: @kogtick_master');
+                }
+            } else {
+                alert('Для заказа свяжитесь с нами: @kogtick_master');
+            }
+        }
+
+        // Добавляем кнопку заказа в каждую работу (только для обычных пользователей)
+        function createWorkElement(work, index) {
+            const div = document.createElement('div');
+            div.className = 'work-item';
+            div.style.animationDelay = `${index * 0.1}s`;
+
+            const userId = getCurrentUserId();
+            const likesCount = likes[work.id] ? likes[work.id].count || 0 : 0;
+            const isLiked = likes[work.id] && likes[work.id].users &&
+                           likes[work.id].users.includes(userId);
+
+            // Создаем кнопку заказа для не-админов
+            const orderButton = !isAdmin ?
+                `<button class="order-btn" onclick="orderFromGallery(${work.id})">📞undefinedПродолжаю с того места где остановился:
+
+```javascript
+        // Функция для отправки заказа из галереи
+        function orderFromGallery(workId) {
+            const work = works.find(w => w.id === workId);
+            if (!work) return;
+
+            if (tg && tg.sendData) {
+                const orderData = {
+                    action: 'gallery_order',
+                    workId: workId,
+                    workTitle: work.title,
+                    timestamp: new Date().toISOString()
+                };
+
+                try {
+                    tg.sendData(JSON.stringify(orderData));
+                    tg.close();
+                } catch (error) {
+                    console.log('Не удалось отправить заказ:', error);
+                    alert('Не удалось отправить заказ. Свяжитесь с нами напрямую: @kogtick_master');
+                }
+            } else {
+                alert('Для заказа свяжитесь с нами: @kogtick_master или +7 (999) 123-45-67');
+            }
+        }
+
+        // Добавляем кнопку заказа к каждой работе (обновляем функцию создания элемента)
+        function createWorkElement(work, index) {
+            const div = document.createElement('div');
+            div.className = 'work-item';
+            div.style.animationDelay = `${index * 0.1}s`;
+
+            const userId = getCurrentUserId();
+            const likesCount = likes[work.id] ? likes[work.id].count || 0 : 0;
+            const isLiked = likes[work.id] && likes[work.id].users &&
+                           likes[work.id].users.includes(userId);
+
+            div.innerHTML = `
+                <img src="${work.image}" alt="${work.title}" class="work-image" onclick="openImageModal('${work.image}', '${work.title}')">
+                <div class="work-info">
+                    <div class="work-title">${work.title}</div>
+                    <div class="work-hashtags">
+                        ${work.hashtags.map(tag => `<span class="hashtag">#${tag}</span>`).join('')}
+                    </div>
+                    <button class="order-btn" onclick="orderFromGallery(${work.id})" style="
+                        background: #FFB6C1;
+                        color: white;
+                        border: none;
+                        padding: 8px 16px;
+                        border-radius: 15px;
+                        font-size: 12px;
+                        font-weight: bold;
+                        cursor: pointer;
+                        margin-top: 12px;
+                        transition: all 0.3s ease;
+                    " onmouseover="this.style.background='#FF9FAD'" onmouseout="this.style.background='#FFB6C1'">
+                        📞 Заказать эту работу
+                    </button>
+                </div>
+                <button class="like-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike(${work.id})">
+                    ${isLiked ? '💖' : '🤍'}
+                    ${likesCount > 0 ? `<span class="like-count">${likesCount}</span>` : ''}
+                </button>
+            `;
+
+            return div;
+        }
+
+        // Функция для обновления статистики просмотров
+        function incrementViewsCount() {
+            let stats = JSON.parse(localStorage.getItem('galleryStats') || '{"total_views": 0, "daily_views": {}}');
+            const today = new Date().toDateString();
+
+            stats.total_views = (stats.total_views || 0) + 1;
+            stats.daily_views = stats.daily_views || {};
+            stats.daily_views[today] = (stats.daily_views[today] || 0) + 1;
+
+            localStorage.setItem('galleryStats', JSON.stringify(stats));
+
+            // Отправляем статистику в бот, если возможно
+            if (tg && tg.sendData) {
+                try {
+                    const viewData = {
+                        action: 'gallery_view',
+                        timestamp: new Date().toISOString(),
+                        totalViews: stats.total_views
+                    };
+                    // Отправляем не сразу, а с задержкой, чтобы не спамить
+                    setTimeout(() => {
+                        tg.sendData(JSON.stringify(viewData));
+                    }, 1000);
+                } catch (error) {
+                    console.log('Не удалось отправить статистику просмотров:', error);
+                }
+            }
+
+            return stats.total_views;
+        }
+
+        // Функция для получения статистики админу
+        function getDetailedStats() {
+            if (!isAdmin) return null;
+
+            const stats = JSON.parse(localStorage.getItem('galleryStats') || '{"total_views": 0, "daily_views": {}}');
+            const today = new Date().toDateString();
+
+            // Подсчитываем лайки за сегодня
+            let todayLikes = 0;
+            let totalLikes = 0;
+
+            Object.values(likes).forEach(workLikes => {
+                totalLikes += workLikes.count || 0;
+
+                if (workLikes.history) {
+                    todayLikes += workLikes.history.filter(entry =>
+                        entry.action === 'like' &&
+                        new Date(entry.timestamp).toDateString() === today
+                    ).length;
+                }
+            });
+
+            return {
+                totalViews: stats.total_views || 0,
+                todayViews: stats.daily_views[today] || 0,
+                todayLikes: todayLikes,
+                totalLikes: totalLikes,
+                totalWorks: works.length,
+                lastUpdate: new Date().toLocaleString('ru-RU')
+            };
+        }
+
+        // Обновляем функцию updateAdminStats
+        function updateAdminStats() {
+            if (!isAdmin) return;
+
+            const stats = getDetailedStats();
+            if (!stats) return;
+
+            document.getElementById('todayLikes').textContent = stats.todayLikes;
+            document.getElementById('totalWorks').textContent = stats.totalWorks;
+            document.getElementById('lastUpdate').textContent =
+                new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+
+            // Обновляем общее количество просмотров в статистике
+            const totalViewsElement = document.getElementById('totalViews');
+            if (totalViewsElement) {
+                totalViewsElement.textContent = stats.totalViews;
+            }
+        }
+
+        // Функция для автоматического обновления статистики
+        function startStatsUpdater() {
+            if (isAdmin) {
+                setInterval(updateAdminStats, 30000); // Обновляем каждые 30 секунд
+            }
+        }
+
+        // Функция для экспорта данных (только для админа)
+        function exportGalleryData() {
+            if (!isAdmin) {
+                alert('Доступно только администраторам');
+                return;
+            }
+
+            const exportData = {
+                works: works,
+                likes: likes,
+                stats: JSON.parse(localStorage.getItem('galleryStats') || '{}'),
+                exportDate: new Date().toISOString(),
+                version: '1.0'
+            };
+
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = `gallery_backup_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Функция для импорта данных (только для админа)
+        function importGalleryData(event) {
+            if (!isAdmin) {
+                alert('Доступно только администраторам');
+                return;
+            }
+
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importData = JSON.parse(e.target.result);
+
+                    if (confirm('Это действие заменит все текущие данные галереи. Продолжить?')) {
+                        if (importData.works) works = importData.works;
+                        if (importData.likes) likes = importData.likes;
+                        if (importData.stats) {
+                            localStorage.setItem('galleryStats', JSON.stringify(importData.stats));
+                        }
+
+                        saveWorks();
+                        saveLikes();
+                        renderGallery();
+                        updateAdminStats();
+
+                        alert('Данные успешно импортированы!');
+                    }
+                } catch (error) {
+                    alert('Ошибка при чтении файла: ' + error.message);
+                }
+            };
+
+            reader.readAsText(file);
+        }
+
+        // Добавляем админские кнопки в интерфейс (если админ)
+        function addAdminControls() {
+            if (!isAdmin) return;
+
+            // Добавляем кнопки экспорта/импорта в админ-статистику
+            const adminStats = document.getElementById('adminStats');
+            if (adminStats) {
+                const controlsDiv = document.createElement('div');
+                controlsDiv.style.marginTop = '15px';
+                controlsDiv.innerHTML = `
+                    <button onclick="exportGalleryData()" style="
+                        background: #4A90E2;
+                        color: white;
+                        border: none;
+                        padding: 6px 12px;
+                        border-radius: 8px;
+                        font-size: 12px;
+                        cursor: pointer;
+                        margin-right: 8px;
+                    ">📥 Экспорт данных</button>
+                    <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importGalleryData(event)">
+                    <button onclick="document.getElementById('importFile').click()" style="
+                        background: #FF6B6B;
+                        color: white;
+                        border: none;
+                        padding: 6px 12px;
+                        border-radius: 8px;
+                        font-size: 12px;
+                        cursor: pointer;
+                    ">📤 Импорт данных</button>
+                `;
+                adminStats.appendChild(controlsDiv);
+            }
+        }
+
+        // Обновленная инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            showLoading(true);
+
+            // Увеличиваем счетчик просмотров
+            incrementViewsCount();
+
+            checkAdminStatus();
+            loadWorks();
+            loadLikes();
+            renderGallery();
+            updateAdminStats();
+            addAdminControls();
+            startStatsUpdater();
+
+            showLoading(false);
+
+            // Логируем успешную загрузку
+            console.log('Галерея "Когтик" загружена успешно!');
+            console.log(`Работ в галерее: ${works.length}`);
+            console.log(`Режим администратора: ${isAdmin ? 'ВКЛ' : 'ВЫКЛ'}`);
+        });
+
+        // Обработка ошибок
+        window.addEventListener('error', function(e) {
+            console.error('Ошибка в галерее:', e.error);
+
+            if (tg && tg.showAlert) {
+                tg.showAlert('Произошла ошибка при загрузке галереи');
+            }
+        });
+
+        // Функция для очистки старых данных статистики (запускается раз в день)
+        function cleanupOldStats() {
+            try {
+                const stats = JSON.parse(localStorage.getItem('galleryStats') || '{}');
+                if (!stats.daily_views) return;
+
+                const oneWeekAgo = new Date();
+                oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+                // Удаляем статистику старше недели
+                Object.keys(stats.daily_views).forEach(dateStr => {
+                    if (new Date(dateStr) < oneWeekAgo) {
+                        delete stats.daily_views[dateStr];
+                    }
+                });
+
+                localStorage.setItem('galleryStats', JSON.stringify(stats));
+            } catch (error) {
+                console.log('Ошибка при очистке старой статистики:', error);
+            }
+        }
+
+        // Запускаем очистку при инициализации
+        cleanupOldStats();
+
+        // Проверяем размер localStorage и очищаем при необходимости
+        function checkStorageSize() {
+            try {
+                const totalSize = new Blob(Object.values(localStorage)).size;
+                const maxSize = 5 * 1024 * 1024; // 5MB
+
+                if (totalSize > maxSize) {
+                    console.warn('LocalStorage близок к переполнению, рекомендуется экспорт данных');
+
+                    if (isAdmin && tg && tg.showAlert) {
+                        tg.showAlert('Рекомендуется создать резервную копию данных галереи');
+                    }
+                }
+            } catch (error) {
+                console.log('Не удалось проверить размер localStorage:', error);
+            }
+        }
+
+        // Проверяем размер хранилища периодически
+        setInterval(checkStorageSize, 300000); // каждые 5 минут
+
+    </script>
+</body>
+</html>
